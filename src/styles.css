@@ -1,0 +1,30 @@
+.alert {
+  display: block;
+  width: fit-content;
+  font-size: 0.8em;
+  padding: 0.5rem;
+  margin: 1rem 1rem;
+}
+
+.alert.warning {
+  background-color: #ffff52;
+  color: #acac00;
+}
+
+.alert.danger {
+  background-color: #ff4c4c;
+  color: #bd0000;
+}
+
+.alert.success {
+  background-color: #91ff48;
+  color: #307800;
+}
+
+.alert span {
+  font-size: 0.65em;
+}
+
+.d-none {
+  display: none;
+}
