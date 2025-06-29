@@ -3,13 +3,21 @@ import Footer from './components/Footer';
 import TaskList from './components/TaskList';
 import './App.css';
 import './styles.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 function App() {
-  const [tasks, setTasks] = useState([{ text: 'Learn React', done: false }]);
+  const [tasks, setTasks] = useState([]);
   const [newTask, setNewTask] = useState('');
   const [alert, setAlert] = useState('');
   const [alert_d, setAlert_d] = useState('alert warning d-none');
+
+  useEffect(() => {
+    const savedTasks = JSON.parse(localStorage.getItem('tasks'));
+    if (savedTasks) setTasks(savedTasks);
+  }, []);
+  useEffect(() => {
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+  }, [tasks]);
 
   const resetAlert = () => {
     setTimeout(() => {
@@ -19,7 +27,7 @@ function App() {
   };
 
   const dupExists = newTask => {
-    return tasks.some(task => task.toLowerCase() === newTask.toLowerCase());
+    return tasks.some(task => task.text.toLowerCase() === newTask.toLowerCase());
   };
 
   const addTask = () => {
@@ -51,6 +59,7 @@ function App() {
 
   const clearAll = () => {
     setTasks([]);
+    localStorage.setItem('tasks', JSON.stringify(tasks));
   };
 
   const toggleTask = index => {
