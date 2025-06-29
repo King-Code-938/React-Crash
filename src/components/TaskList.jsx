@@ -6,9 +6,12 @@ function TaskList({ tasks, deleteTask, toggleTask, clear }) {
   }
   return (
     <ul>
-      <button className='clear' onClick={() => clear()}>
-        Clear All
-      </button>
+      <div className='h1'>
+        Total Tasks <span className='italic brac'>{tasks.length}</span>
+        <button className='clear' onClick={() => clear()}>
+          Clear All
+        </button>
+      </div>
       {tasks.map((task, i) => (
         <li key={i} className={task.done ? 'done' : ''}>
           <input type='checkbox' checked={task.done} onChange={() => toggleTask(i)} />

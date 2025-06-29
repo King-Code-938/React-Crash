@@ -47,6 +47,9 @@ function App() {
 
     setTasks([...tasks, { text: trimmed, done: false }]);
     setNewTask('');
+    setAlert('Task Ceated!');
+    setAlert_d('alert success');
+    resetAlert();
     if (tasks.length >= 9) {
       setAlert_d('alert warning');
       setAlert('Limit Reached. <Delete some to add another>');

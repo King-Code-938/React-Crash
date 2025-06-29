@@ -30,6 +30,18 @@
   display: none;
 }
 
+.italic {
+  font-style: italic;
+}
+
+.brac::before {
+  content: "(";
+}
+
+.brac::after {
+  content: ")";
+}
+
 button {
   margin-left: 1rem;
   cursor: pointer;
