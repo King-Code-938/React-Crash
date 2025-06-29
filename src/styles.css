@@ -44,3 +44,8 @@ input, button {
   border: none;
   border-radius: 4px;
 }
+
+.done span {
+  text-decoration: line-through;
+  color: #999;
+}

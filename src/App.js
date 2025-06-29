@@ -6,7 +6,7 @@ import './styles.css';
 import { useState } from 'react';
 
 function App() {
-  const [tasks, setTasks] = useState([]);
+  const [tasks, setTasks] = useState([{ text: 'Learn React', done: false }]);
   const [newTask, setNewTask] = useState('');
   const [alert, setAlert] = useState('');
   const [alert_d, setAlert_d] = useState('alert warning d-none');
@@ -32,7 +32,7 @@ function App() {
       return;
     }
 
-    setTasks([...tasks, trimmed]);
+    setTasks([...tasks, { text: trimmed, done: false }]);
     setNewTask('');
     if (tasks.length >= 9) {
       setAlert_d('alert warning');
@@ -49,10 +49,19 @@ function App() {
     resetAlert();
   };
 
+  const clearAll = () => {
+    setTasks([]);
+  };
+
+  const toggleTask = index => {
+    const updated = tasks.map((task, i) => (i === index ? { ...task, done: !task.done } : task));
+    setTasks(updated);
+  };
+
   return (
     <div>
       <Header title='Task Tracker' />
-      <TaskList tasks={tasks} deleteTask={deleteTask} />
+      <TaskList tasks={tasks} deleteTask={deleteTask} toggleTask={toggleTask} clear={clearAll} />
       <form
         onSubmit={e => {
           e.preventDefault();

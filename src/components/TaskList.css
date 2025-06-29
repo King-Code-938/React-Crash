@@ -3,6 +3,9 @@
   color: #777;
   margin-top: 1rem;
 }
+.clear {
+  margin: 1rem;
+}
 
 #task-list li {
   display: flex;
