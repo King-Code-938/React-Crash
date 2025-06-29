@@ -6,10 +6,17 @@ import './styles.css';
 import { useState } from 'react';
 
 function App() {
-  const [tasks, setTasks] = useState(['Learn']);
+  const [tasks, setTasks] = useState([]);
   const [newTask, setNewTask] = useState('');
   const [alert, setAlert] = useState('');
   const [alert_d, setAlert_d] = useState('alert warning d-none');
+
+  const resetAlert = () => {
+    setTimeout(() => {
+      setAlert('');
+      setAlert_d('d-none');
+    }, 3000);
+  };
 
   const dupExists = newTask => {
     return tasks.some(task => task.toLowerCase() === newTask.toLowerCase());
@@ -21,24 +28,31 @@ function App() {
     if (dupExists(trimmed)) {
       setAlert_d('alert warning');
       setAlert('Already Exists. <Type another task>');
+      resetAlert();
       return;
     }
 
     setTasks([...tasks, trimmed]);
     setNewTask('');
-    console.log(tasks, tasks.length);
     if (tasks.length >= 9) {
       setAlert_d('alert warning');
       setAlert('Limit Reached. <Delete some to add another>');
-    } else {
-      setAlert_d('d-none');
+      resetAlert();
     }
+  };
+
+  const deleteTask = index => {
+    const updated = tasks.filter((_, i) => i !== index);
+    setTasks(updated);
+    setAlert('Task Deleted!');
+    setAlert_d('alert warning');
+    resetAlert();
   };
 
   return (
     <div>
       <Header title='Task Tracker' />
-      <TaskList tasks={tasks} />
+      <TaskList tasks={tasks} deleteTask={deleteTask} />
       <form
         onSubmit={e => {
           e.preventDefault();

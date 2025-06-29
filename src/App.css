@@ -48,31 +48,3 @@ body.light {
   background: #f1f1f1;
   color: #111;
 }
-
-input, button {
-  padding: 0.5rem;
-  font-size: 1rem;
-  border-radius: 10%;
-  border: #27b20094 1px solid;
-}
-
-#task-list li {
-  display: flex;
-  justify-content: space-between;
-  margin: 0.5rem 0;
-  text-decoration: none;
-}
-
-.completed {
-  text-decoration: line-through;
-  color: gray;
-  opacity: 0.6;
-}
-
-button {
-  cursor: pointer;
-  background-color: #439a00;
-  box-shadow: #000000 0px 0px 5px;
-  height: fit-content;
-  width: fit-content;
-}
