@@ -10,6 +10,9 @@ function App() {
   const [newTask, setNewTask] = useState('');
   const [alert, setAlert] = useState('');
   const [alert_d, setAlert_d] = useState('alert warning d-none');
+  const [darkMode, setDarkMode] = useState(() => {
+    return localStorage.getItem('darkMode') === 'true';
+  });
 
   useEffect(() => {
     const saved = localStorage.getItem('tasks');
@@ -23,6 +26,11 @@ function App() {
       localStorage.setItem('tasks', JSON.stringify(tasks));
     }
   }, [tasks]);
+
+  useEffect(() => {
+    document.body.className = darkMode ? 'dark' : 'light';
+    localStorage.setItem('darkMode', darkMode);
+  }, [darkMode]);  
 
   const resetAlert = () => {
     setTimeout(() => {
@@ -85,7 +93,7 @@ function App() {
 
   return (
     <div>
-      <Header title='Task Tracker' />
+      <Header title='Task Tracker' /> <button onClick={() => setDarkMode(!darkMode)}>{darkMode ? '☀️ Light Mode' : '🌙 Dark Mode'}</button>
       <TaskList tasks={tasks} deleteTask={deleteTask} updateTask={updateTask} toggleTask={toggleTask} clear={clearAll} />
       <form
         onSubmit={e => {
