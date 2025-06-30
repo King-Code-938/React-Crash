@@ -94,7 +94,6 @@ function App() {
   return (
     <div>
       <Header title='Task Tracker' /> <button onClick={() => setDarkMode(!darkMode)}>{darkMode ? '☀️ Light Mode' : '🌙 Dark Mode'}</button>
-      <TaskList tasks={tasks} deleteTask={deleteTask} updateTask={updateTask} toggleTask={toggleTask} clear={clearAll} />
       <form
         onSubmit={e => {
           e.preventDefault();
@@ -112,6 +111,7 @@ function App() {
         </button>
       </form>
       <p className={alert_d}>{alert}</p>
+      <TaskList tasks={tasks} deleteTask={deleteTask} updateTask={updateTask} toggleTask={toggleTask} clear={clearAll} />
       <Footer />
     </div>
   );

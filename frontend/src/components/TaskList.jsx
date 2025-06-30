@@ -23,7 +23,10 @@ function TaskList({ tasks, deleteTask, updateTask, toggleTask, clear }) {
   return (
     <ul>
       <div className='h1'>
-        Total Tasks <span className='italic brac'>{tasks.length}</span>
+        Total Tasks{' '}
+        <span className='italic brac'>
+          {tasks.length} {tasks.length >= 15 ? 'Limit Reached' : ''}
+        </span>
         <button className='clear' onClick={() => clear()}>
           Clear All
         </button>
@@ -35,12 +38,14 @@ function TaskList({ tasks, deleteTask, updateTask, toggleTask, clear }) {
             <>
               <input
                 type='text'
+                id='edit'
                 value={editText}
                 onChange={e => setEditText(e.target.value)}
                 onKeyDown={e => {
                   if (e.key === 'Enter') handleSave();
                   if (e.key === 'Escape') setEditIndex(null);
                 }}
+                autoFocus
               />
               <button onClick={handleSave}>💾</button>
               <button onClick={() => setEditIndex(null)}>❌</button>

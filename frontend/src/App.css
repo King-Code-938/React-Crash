@@ -37,11 +37,14 @@
   }
 }
 
+body {
+  transition: background 0.3s ease;
+}
+
 body.dark {
   background: #121212;
   color: #eee;
   font-family: sans-serif;
-  transition: background 0.3s ease;
 }
 
 body.light {
