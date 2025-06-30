@@ -50,7 +50,7 @@ function App() {
     setAlert('Task Ceated!');
     setAlert_d('alert success');
     resetAlert();
-    if (tasks.length >= 9) {
+    if (tasks.length >= 14) {
       setAlert_d('alert warning');
       setAlert('Limit Reached. <Delete some to add another>');
       resetAlert();
@@ -58,11 +58,19 @@ function App() {
   };
 
   const deleteTask = index => {
-    const updated = tasks.filter((_, i) => i !== index);
+    const confirm = window.confirm('Are you sure you want to delete this task?');
+    if (confirm) {
+      const updated = tasks.filter((_, i) => i !== index);
+      setTasks(updated);
+      setAlert('Task Deleted!');
+      setAlert_d('alert warning');
+      resetAlert();
+    }
+  };
+
+  const updateTask = (index, input) => {
+    const updated = tasks.map((task, i) => (i === index ? { ...task, text: input.trim() } : task));
     setTasks(updated);
-    setAlert('Task Deleted!');
-    setAlert_d('alert warning');
-    resetAlert();
   };
 
   const clearAll = () => {
@@ -78,7 +86,7 @@ function App() {
   return (
     <div>
       <Header title='Task Tracker' />
-      <TaskList tasks={tasks} deleteTask={deleteTask} toggleTask={toggleTask} clear={clearAll} />
+      <TaskList tasks={tasks} deleteTask={deleteTask} updateTask={updateTask} toggleTask={toggleTask} clear={clearAll} />
       <form
         onSubmit={e => {
           e.preventDefault();
@@ -89,7 +97,7 @@ function App() {
           placeholder='Enter new task'
           value={newTask}
           onChange={e => setNewTask(e.target.value)}
-          disabled={tasks.length >= 10}
+          disabled={tasks.length >= 15}
         />
         <button type='submit' disabled={!newTask.trim()}>
           Add
