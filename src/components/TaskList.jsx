@@ -1,22 +1,22 @@
 import { useState } from 'react';
 import './TaskList.css';
 
-function TaskList({ tasks, deleteTask, updateTask, toggleTask, clear }) {
-  const [editIndex, setEditIndex] = useState(null);
+function TaskList({ tasks, deleteTask, updateTask, toggleTask, clear, }) {
+  const [editId, setEditId] = useState(null);
   const [editText, setEditText] = useState('');
 
   if (tasks.length === 0) {
     return <p className='empty-msg'>No tasks yet. Add something!</p>;
   }
 
-  const handleEdit = (i, text) => {
-    setEditIndex(i);
+  const handleEdit = (id, text) => {
+    setEditId(id);
     setEditText(text);
   };
 
   const handleSave = () => {
-    updateTask(editIndex, editText);
-    setEditIndex(null);
+    updateTask(editId, editText);
+    setEditId(null);
     setEditText('');
   };
 
@@ -31,10 +31,10 @@ function TaskList({ tasks, deleteTask, updateTask, toggleTask, clear }) {
           Clear All
         </button>
       </div>
-      {tasks.map((task, i) => (
-        <li key={i} className={task.done ? 'done' : ''}>
-          <input type='checkbox' checked={task.done} onChange={() => toggleTask(i)} />
-          {editIndex === i ? (
+      {tasks.map(task => (
+        <li key={task._id} className={task.done ? 'done' : ''}>
+          <input type='checkbox' checked={task.done} onChange={() => toggleTask(task._id)} />
+          {editId === task._id ? (
             <>
               <input
                 type='text'
@@ -43,18 +43,18 @@ function TaskList({ tasks, deleteTask, updateTask, toggleTask, clear }) {
                 onChange={e => setEditText(e.target.value)}
                 onKeyDown={e => {
                   if (e.key === 'Enter') handleSave();
-                  if (e.key === 'Escape') setEditIndex(null);
+                  if (e.key === 'Escape') setEditId(null);
                 }}
                 autoFocus
               />
               <button onClick={handleSave}>💾</button>
-              <button onClick={() => setEditIndex(null)}>❌</button>
+              <button onClick={() => setEditId(null)}>❌</button>
             </>
           ) : (
             <>
               <span>{task.text}</span>
-              <button onClick={() => handleEdit(i, task.text)}>✏️</button>
-              <button onClick={() => deleteTask(i)}>❌</button>
+              <button onClick={() => handleEdit(task._id, task.text)}>✏️</button>
+              <button onClick={() => deleteTask(task._id)}>❌</button>
             </>
           )}
         </li>
