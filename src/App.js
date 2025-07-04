@@ -22,8 +22,9 @@ function App() {
     localStorage.removeItem('token');
   };
 
-  const API_URL = 'https://react-crash-backend.onrender.com/api/tasks';
-  const SERVER_URL = 'https://react-crash-backend.onrender.com';
+  const API_URL = process.env.TASK_API_URL || 'https://react-crash-backend.onrender.com/api/tasks';
+  const SERVER_URL = process.env.VITE_API_URL || 'https://react-crash-backend.onrender.com';
+  const AUTH_API_URL = process.env.AUTH_API_URL || 'https://react-crash-backend.onrender.com/api/auth';
 
   useEffect(() => {
     fetch(SERVER_URL)
@@ -46,7 +47,7 @@ function App() {
         else console.error('Expected array but got:', data);
       })
       .catch(err => console.error('Failed to fetch tasks:', err));
-  }, [setTasks, token]);
+  }, [setTasks, token, API_URL]);
 
   useEffect(() => {
     if (tasks.length > 0) {
@@ -169,7 +170,7 @@ function App() {
   };
 
   if (!token) {
-    return <AuthForm setToken={setToken} />;
+    return <AuthForm setToken={setToken} AUTH_API_URL={AUTH_API_URL} />;
   }
 
   return (
