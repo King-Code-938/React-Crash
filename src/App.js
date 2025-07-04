@@ -50,12 +50,6 @@ function App() {
   }, [setTasks, token, API_URL]);
 
   useEffect(() => {
-    if (tasks.length > 0) {
-      localStorage.setItem('tasks', JSON.stringify(tasks));
-    }
-  }, [tasks]);
-
-  useEffect(() => {
     document.body.className = darkMode ? 'dark' : 'light';
     localStorage.setItem('darkMode', darkMode);
   }, [darkMode]);
