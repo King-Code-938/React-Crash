@@ -22,8 +22,9 @@ function App() {
     localStorage.removeItem('token');
   };
 
-  const API_URL = import.meta.env.VITE_API_URL || 'https://react-crash-backend.onrender.com/api/tasks';
+  const API_URL = process.env.VITE_API_URL || 'https://react-crash-backend.onrender.com/api/tasks';
   const SERVER_URL = 'https://react-crash-backend.onrender.com';
+
   useEffect(() => {
     fetch(SERVER_URL)
       .then(data => (data === 'Server running' ? setIsServerActive(true) : setIsServerActive(false)))

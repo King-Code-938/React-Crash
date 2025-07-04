@@ -1,4 +1,5 @@
 import { useState } from 'react';
+const AUTH_API_URL = process.env.AUTH_API_URL;
 
 function AuthForm({ setToken }) {
   const [mode, setMode] = useState('login');
@@ -6,7 +7,7 @@ function AuthForm({ setToken }) {
 
   const handleSubmit = async e => {
     e.preventDefault();
-    const res = await fetch(`http://localhost:5000/api/auth/${mode}`, {
+    const res = await fetch(`${AUTH_API_URL}${mode}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(form),
