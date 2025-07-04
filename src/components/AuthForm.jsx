@@ -26,7 +26,9 @@ function AuthForm({ setToken, AUTH_API_URL }) {
       <h2>{mode === 'login' ? 'Login' : 'Register'}</h2>
       <input type='text' placeholder='Username' value={form.username} onChange={e => setForm({ ...form, username: e.target.value })} />
       <input type='password' placeholder='Password' value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} />
-      <button type='submit'>{mode}</button>
+      <button className='lg' type='submit'>
+        {mode}
+      </button>
       <p onClick={() => setMode(mode === 'login' ? 'register' : 'login')} style={{ cursor: 'pointer' }}>
         {mode === 'login' ? 'Create an account' : 'Back to login'}
       </p>

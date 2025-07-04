@@ -169,8 +169,13 @@ function App() {
 
   return (
     <div>
-      <Header title='Task Tracker' /> <button onClick={() => setDarkMode(!darkMode)}>{darkMode ? '☀️ Light Mode' : '🌙 Dark Mode'}</button>
-      <button onClick={logout}>Logout</button>
+      <Header title='Task Tracker' />{' '}
+      <button className='md' onClick={() => setDarkMode(!darkMode)}>
+        {darkMode ? '☀️ Light Mode' : '🌙 Dark Mode'}
+      </button>
+      <button className='md' onClick={logout}>
+        Logout
+      </button>
       <form
         onSubmit={e => {
           e.preventDefault();

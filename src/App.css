@@ -58,13 +58,16 @@ input, button {
   border: none;
   border-radius: 4px;
   transition: 0.3s ease;
-}
-
-input, button {
-  width: 100%;
   box-sizing: border-box;
 }
 
+input, button.lg {
+  width: 100%;
+}
+
+button.md {
+  width: 50%;
+}
 
 body.dark {
   background: #121212;
