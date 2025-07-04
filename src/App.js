@@ -22,7 +22,7 @@ function App() {
     localStorage.removeItem('token');
   };
 
-  const API_URL = process.env.VITE_API_URL || 'https://react-crash-backend.onrender.com/api/tasks';
+  const API_URL = 'https://react-crash-backend.onrender.com/api/tasks';
   const SERVER_URL = 'https://react-crash-backend.onrender.com';
 
   useEffect(() => {
