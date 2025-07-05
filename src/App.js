@@ -2,7 +2,11 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import TaskList from './components/TaskList';
 import AuthForm from './components/AuthForm';
+import Settings from './components/Settings';
+import Navbar from './components/Navbar';
 import { ToastContainer, toast } from 'react-toastify';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import jwtDecode from 'jwt-decode';
 import 'react-toastify/dist/ReactToastify.css';
 import './App.css';
 import './styles.css';
@@ -25,6 +29,17 @@ function App() {
   const API_URL = process.env.TASK_API_URL || 'https://react-crash-backend.onrender.com/api/tasks';
   const SERVER_URL = process.env.VITE_API_URL || 'https://react-crash-backend.onrender.com';
   const AUTH_API_URL = process.env.AUTH_API_URL || 'https://react-crash-backend.onrender.com/api/auth';
+
+  const getUsernameFromToken = token => {
+    try {
+      const decoded = jwtDecode(token);
+      return decoded?.username || decoded?.name || 'User';
+    } catch (err) {
+      return 'User';
+    }
+  };
+
+  const username = getUsernameFromToken(token);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -232,34 +247,38 @@ function App() {
   }
 
   return (
-    <div>
-      <Header title='Task Tracker' />{' '}
-      <button className='md' onClick={() => setDarkMode(!darkMode)}>
-        {darkMode ? '☀️ Light Mode' : '🌙 Dark Mode'}
-      </button>
-      <button className='md' onClick={logout}>
-        Logout
-      </button>
-      <form
-        onSubmit={e => {
-          e.preventDefault();
-          addTask();
-        }}>
-        <input
-          type='text'
-          placeholder='Enter new task'
-          value={newTask}
-          onChange={e => setNewTask(e.target.value)}
-          disabled={tasks.length >= 15}
+    <Router>
+      <Header title='Task Tracker' /> <Navbar />
+      <Routes>
+        <Route
+          path='/'
+          element={
+            <>
+              <form
+                onSubmit={e => {
+                  e.preventDefault();
+                  addTask();
+                }}>
+                <input
+                  type='text'
+                  placeholder='Enter new task'
+                  value={newTask}
+                  onChange={e => setNewTask(e.target.value)}
+                  disabled={tasks.length >= 15}
+                />
+                <button type='submit' disabled={!newTask.trim()}>
+                  Add
+                </button>
+              </form>
+              <TaskList tasks={tasks} deleteTask={deleteTask} updateTask={updateTask} toggleTask={toggleTask} clear={clearAll} />
+            </>
+          }
         />
-        <button type='submit' disabled={!newTask.trim()}>
-          Add
-        </button>
-      </form>
-      <TaskList tasks={tasks} deleteTask={deleteTask} updateTask={updateTask} toggleTask={toggleTask} clear={clearAll} />
+        <Route path='/settings' element={<Settings username={username} darkMode={darkMode} setDarkMode={setDarkMode} logout={logout} />} />
+      </Routes>
       <Footer />
       <ToastContainer position='top-right' autoClose={3000} />
-    </div>
+    </Router>
   );
 }
 
