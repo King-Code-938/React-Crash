@@ -7,9 +7,10 @@ function TaskList({ tasks, deleteTask, updateTask, toggleTask, clear }) {
   const [state, setState] = useState('Loading...');
 
   useEffect(() => {
-    setTimeout(() => {
+    const timeout = setTimeout(() => {
       setState('No tasks yet. Add something!');
     }, 8000);
+    return () => clearTimeout(timeout);
   });
 
   if (tasks.length === 0) {
