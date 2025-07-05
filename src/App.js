@@ -33,21 +33,28 @@ function App() {
   });
 
   useEffect(() => {
-    if (!token) return;
-    fetch(API_URL, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then(res => res.json())
-      .then(data => {
-        if (Array.isArray(data)) setTasks(data);
-        else console.error('Expected array but got:', data);
+    const interval = setInterval(() => {
+      fetch(API_URL, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
       })
-      .catch(err => console.error('Failed to fetch tasks:', err));
-  }, [setTasks, token, API_URL]);
+        .then(res => res.json())
+        .then(data => {
+          const current = JSON.stringify(tasks);
+          const incoming = JSON.stringify(data);
+          if (incoming !== current) {
+            if (Array.isArray(data)) setTasks(data);
+            else console.error('Expected array but got:', data);
+          }
+        })
+        .catch(err => console.error('Polling error:', err));
+    }, 5000); // fetch every 5 seconds
+
+    return () => clearInterval(interval);
+  }, [token, API_URL, tasks]);
 
   useEffect(() => {
     document.body.className = darkMode ? 'dark' : 'light';
