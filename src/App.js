@@ -53,7 +53,7 @@ function App() {
         .catch(err => console.error('Polling error:', err));
     }, 5000); // fetch every 5 seconds
 
-    return () => clearInterval(interval);
+    return () => interval();
   }, [token, API_URL, tasks]);
 
   useEffect(() => {
