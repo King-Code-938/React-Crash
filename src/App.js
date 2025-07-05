@@ -28,13 +28,6 @@ function App() {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setToken(localStorage.getItem('token') || null);
-    }, 5000);
-    return () => clearInterval(interval);
-  });
-
-  useEffect(() => {
-    const interval = setInterval(() => {
       fetch(SERVER_URL, {
         method: 'GET',
         headers: {
@@ -87,14 +80,18 @@ function App() {
       })
         .then(res => res.json())
         .then(data => {
+          console.log('Fetched data:', data); // Add this
+          if (!Array.isArray(data)) {
+            console.error('Expected an array but got:', data);
+            toast.error('Failed to load tasks: invalid format');
+            return;
+          }
+
           const current = JSON.stringify(tasks);
           const incoming = JSON.stringify(data);
+
           if (incoming !== current) {
-            if (Array.isArray(data)) {
-              setTasks(data);
-            } else {
-              console.error('Expected array but got:', data);
-            }
+            setTasks(data);
           }
         })
         .catch(err => {
@@ -107,7 +104,7 @@ function App() {
     }, 5000); // fetch every 5 seconds
 
     return () => clearInterval(interval);
-  }, [token, API_URL, tasks]);
+  }, [token, API_URL]);
 
   useEffect(() => {
     document.body.className = darkMode ? 'dark' : 'light';

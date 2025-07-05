@@ -17,6 +17,10 @@ function TaskList({ tasks, deleteTask, updateTask, toggleTask, clear }) {
     return <p className='empty-msg'>{state}</p>;
   }
 
+  if (!Array.isArray(tasks)) {
+    return <p>Error loading tasks.</p>;
+  }
+  
   const handleEdit = (id, text) => {
     setEditId(id);
     setEditText(text);
