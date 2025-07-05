@@ -27,14 +27,40 @@ function App() {
   const AUTH_API_URL = process.env.AUTH_API_URL || 'https://react-crash-backend.onrender.com/api/auth';
 
   useEffect(() => {
-    fetch(SERVER_URL)
-      .then(data => {
-        data === 'Server running' ? setIsServerActive(true) : setIsServerActive(false);
-        isServerActive ? toast.info('Server Connected') : toast.error('Internal Server Error');
-      })
-      .catch(err => console.warn('Server: ', isServerActive, 'Server active check failed: ', err));
+    const interval = setInterval(() => {
+      fetch(SERVER_URL)
+        .then(data => {
+          data.ok ? setIsServerActive(true) : setIsServerActive(false);
+          if (data.statusText === '401') {
+            toast.error(
+              <>
+                <b>Session Expired:</b> Logged Out
+              </>
+            );
+            setTimeout(() => {
+              logout();
+            }, 3000);
+          }
+        })
+        .catch(err => {
+          setIsServerActive(false);
+          toast.error(
+            <span>
+              <b>Internal Server Error: </b> Reload page
+            </span>
+          );
+          console.warn('Server: ', isServerActive, 'Server active check failed: ', err);
+        });
+    }, 5000);
+    return () => clearInterval(interval);
   });
-
+  if (!isServerActive) {
+    toast.error(
+      <span>
+        <b>Internal Server Error:</b> Please reload
+      </span>
+    );
+  }
   useEffect(() => {
     const interval = setInterval(() => {
       fetch(API_URL, {
@@ -44,19 +70,38 @@ function App() {
           Authorization: `Bearer ${token}`,
         },
       })
-        .then(res => res.json())
         .then(data => {
+          if (!data.ok) {
+            toast.error(
+              <>
+                <b>Session Expired:</b> Logged Out
+              </>
+            );
+            setTimeout(() => {
+              logout();
+            }, 3000);
+          }
           const current = JSON.stringify(tasks);
           const incoming = JSON.stringify(data);
           if (incoming !== current) {
-            if (Array.isArray(data)) setTasks(data);
-            else console.error('Expected array but got:', data);
+            if (Array.isArray(data)) {
+              setTasks(data);
+            } else {
+              console.error('Expected array but got:', data);
+            }
           }
         })
-        .catch(err => console.error('Polling error:', err));
+        .then(res => res.json())
+        .catch(err => {
+          console.error('Polling error:', err);
+          console.warn(JSON.stringify(err));
+          if (err) {
+            toast.error(<span>Network Disconnected</span>);
+          }
+        });
     }, 5000); // fetch every 5 seconds
 
-    return () => interval(interval);
+    return () => clearInterval(interval);
   }, [token, API_URL, tasks]);
 
   useEffect(() => {
@@ -211,7 +256,7 @@ function App() {
       </form>
       <TaskList tasks={tasks} deleteTask={deleteTask} updateTask={updateTask} toggleTask={toggleTask} clear={clearAll} />
       <Footer />
-      <ToastContainer position='top-right' autoClose={3000} />;
+      <ToastContainer position='top-right' autoClose={3000} />
     </div>
   );
 }
