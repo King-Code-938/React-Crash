@@ -1,10 +1,10 @@
 {
-  "name": "React Crash",
-  "short_name": "CrashTasks",
+  "name": "Task Tracker",
+  "short_name": "Tasks",
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#0f0",
-  "background_color": "#111",
+  "theme_color": "#001daf",
+  "background_color": "#001daf",
   "icons": [
     {
       "src": "favicon.ico",
