@@ -1,12 +1,19 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './TaskList.css';
 
-function TaskList({ tasks, deleteTask, updateTask, toggleTask, clear, }) {
+function TaskList({ tasks, deleteTask, updateTask, toggleTask, clear }) {
   const [editId, setEditId] = useState(null);
   const [editText, setEditText] = useState('');
+  const [state, setState] = useState('Loading...');
+
+  useEffect(() => {
+    setTimeout(() => {
+      setState('No tasks yet. Add something!');
+    }, 8000);
+  });
 
   if (tasks.length === 0) {
-    return <p className='empty-msg'>No tasks yet. Add something!</p>;
+    return <p className='empty-msg'>{state}</p>;
   }
 
   const handleEdit = (id, text) => {

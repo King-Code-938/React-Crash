@@ -14,7 +14,7 @@ function App() {
   const [darkMode, setDarkMode] = useState(() => {
     return localStorage.getItem('darkMode') === 'true';
   });
-  const [isServerActive, setIsServerActive] = useState(false);
+  const [isServerActive, setIsServerActive] = useState(true);
   const [token, setToken] = useState(() => localStorage.getItem('token') || null);
 
   const logout = () => {
@@ -28,10 +28,23 @@ function App() {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      fetch(SERVER_URL)
-        .then(data => {
-          data.ok ? setIsServerActive(true) : setIsServerActive(false);
-          if (data.statusText === '401') {
+      setToken(localStorage.getItem('token') || null);
+    }, 5000);
+    return () => clearInterval(interval);
+  });
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetch(SERVER_URL, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      })
+        .then(res => {
+          setIsServerActive(res.ok);
+          if (res.status === 401) {
             toast.error(
               <>
                 <b>Session Expired:</b> Logged Out
@@ -54,13 +67,15 @@ function App() {
     }, 5000);
     return () => clearInterval(interval);
   });
-  if (!isServerActive) {
-    toast.error(
-      <span>
-        <b>Internal Server Error:</b> Please reload
-      </span>
-    );
-  }
+  useEffect(() => {
+    if (!isServerActive) {
+      toast.error(
+        <span>
+          <b>Internal Server Error:</b> Please reload
+        </span>
+      );
+    }
+  });
   useEffect(() => {
     const interval = setInterval(() => {
       fetch(API_URL, {
@@ -70,17 +85,8 @@ function App() {
           Authorization: `Bearer ${token}`,
         },
       })
+        .then(res => res.json())
         .then(data => {
-          if (!data.ok) {
-            toast.error(
-              <>
-                <b>Session Expired:</b> Logged Out
-              </>
-            );
-            setTimeout(() => {
-              logout();
-            }, 3000);
-          }
           const current = JSON.stringify(tasks);
           const incoming = JSON.stringify(data);
           if (incoming !== current) {
@@ -91,7 +97,6 @@ function App() {
             }
           }
         })
-        .then(res => res.json())
         .catch(err => {
           console.error('Polling error:', err);
           console.warn(JSON.stringify(err));
