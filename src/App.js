@@ -5,8 +5,8 @@ import AuthForm from './components/AuthForm';
 import Settings from './components/Settings';
 import Navbar from './components/Navbar';
 import { ToastContainer, toast } from 'react-toastify';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import jwtDecode from 'jwt-decode';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode'; // ✅ works with latest version
 import 'react-toastify/dist/ReactToastify.css';
 import './App.css';
 import './styles.css';
@@ -112,7 +112,7 @@ function App() {
         .catch(err => {
           console.error('Polling error:', err);
           console.warn(JSON.stringify(err));
-          if (err) {
+          if (err.message) {
             toast.error(<span>Network Disconnected</span>);
           }
         });
@@ -248,7 +248,7 @@ function App() {
 
   return (
     <Router>
-      <Header title='Task Tracker' /> <Navbar />
+      <Header title='Task Tracker' /> <Navbar username={username} />
       <Routes>
         <Route
           path='/'
@@ -277,7 +277,7 @@ function App() {
         <Route path='/settings' element={<Settings username={username} darkMode={darkMode} setDarkMode={setDarkMode} logout={logout} />} />
       </Routes>
       <Footer />
-      <ToastContainer position='top-right' autoClose={3000} />
+      <ToastContainer position='top-center' autoClose={3000} />
     </Router>
   );
 }
