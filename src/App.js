@@ -2,6 +2,8 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import TaskList from './components/TaskList';
 import AuthForm from './components/AuthForm';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './App.css';
 import './styles.css';
 import { useState, useEffect } from 'react';
@@ -9,8 +11,6 @@ import { useState, useEffect } from 'react';
 function App() {
   const [tasks, setTasks] = useState([]);
   const [newTask, setNewTask] = useState('');
-  const [alert, setAlert] = useState('');
-  const [alert_d, setAlert_d] = useState('alert warning d-none');
   const [darkMode, setDarkMode] = useState(() => {
     return localStorage.getItem('darkMode') === 'true';
   });
@@ -28,7 +28,10 @@ function App() {
 
   useEffect(() => {
     fetch(SERVER_URL)
-      .then(data => (data === 'Server running' ? setIsServerActive(true) : setIsServerActive(false)))
+      .then(data => {
+        data === 'Server running' ? setIsServerActive(true) : setIsServerActive(false);
+        isServerActive ? toast.info('Server Connected') : toast.error('Internal Server Error');
+      })
       .catch(err => console.warn('Server: ', isServerActive, 'Server active check failed: ', err));
   });
 
@@ -53,20 +56,13 @@ function App() {
         .catch(err => console.error('Polling error:', err));
     }, 5000); // fetch every 5 seconds
 
-    return () => interval();
+    return () => interval(interval);
   }, [token, API_URL, tasks]);
 
   useEffect(() => {
     document.body.className = darkMode ? 'dark' : 'light';
     localStorage.setItem('darkMode', darkMode);
   }, [darkMode]);
-
-  const resetAlert = () => {
-    setTimeout(() => {
-      setAlert('');
-      setAlert_d('d-none');
-    }, 3000);
-  };
 
   const dupExists = newTask => {
     return tasks.some(task => task.text.toLowerCase() === newTask.toLowerCase());
@@ -76,9 +72,7 @@ function App() {
     const trimmed = newTask.trim();
     if (trimmed === '') return;
     if (dupExists(trimmed)) {
-      setAlert_d('alert warning');
-      setAlert('Already Exists. <Type another task>');
-      resetAlert();
+      toast.info('Task already exists');
       return;
     }
     fetch(API_URL, {
@@ -90,16 +84,17 @@ function App() {
       body: JSON.stringify({ text: trimmed }),
     })
       .then(res => res.json())
-      .then(newTask => setTasks([...tasks, newTask]))
-      .catch(err => console.error('Failed to add task:', err));
+      .then(newTask => {
+        setTasks([...tasks, newTask]);
+        toast.success(<span>📝 New task added!</span>);
+      })
+      .catch(err => {
+        console.error('Failed to add task:', err);
+        toast.error('Something went wrong. Failed to add task');
+      });
     setNewTask('');
-    setAlert('Task Ceated!');
-    setAlert_d('alert success');
-    resetAlert();
     if (tasks.length >= 14) {
-      setAlert_d('alert warning');
-      setAlert('Limit Reached. <Delete some to add another>');
-      resetAlert();
+      toast.info('Limit Reached!');
     }
   };
 
@@ -113,11 +108,14 @@ function App() {
           Authorization: `Bearer ${token}`,
         },
       })
-        .then(() => setTasks(tasks.filter(t => t._id !== taskId)))
-        .catch(err => console.error('Failed to delete:', err));
-      setAlert('Task Deleted!');
-      setAlert_d('alert warning');
-      resetAlert();
+        .then(() => {
+          setTasks(tasks.filter(t => t._id !== taskId));
+          toast.warn('Task Deleted');
+        })
+        .catch(err => {
+          console.error('Failed to delete:', err);
+          toast.error('Something went wrong. Failed to delete task');
+        });
     }
   };
 
@@ -133,6 +131,11 @@ function App() {
       .then(res => res.json())
       .then(updated => {
         setTasks(tasks.map(t => (t._id === updated._id ? updated : t)));
+        toast.success('Task updated successfully!');
+      })
+      .catch(err => {
+        console.error('Failed to update: ', err);
+        toast.error('Something went wrong. Failed to update task');
       });
   };
 
@@ -146,11 +149,14 @@ function App() {
           Authorization: `Bearer ${token}`,
         },
       })
-        .then(() => setTasks([]))
-        .catch(err => console.error('Failed to clear tasks:', err));
-      setAlert('Task Cleared!');
-      setAlert_d('alert warning');
-      resetAlert();
+        .then(() => {
+          setTasks([]);
+          toast.warn('All tasks deleted');
+        })
+        .catch(err => {
+          console.error('Failed to clear tasks:', err);
+          toast.error('Failed to clear tasks');
+        });
     }
   };
 
@@ -167,6 +173,10 @@ function App() {
       .then(res => res.json())
       .then(updated => {
         setTasks(tasks.map(t => (t._id === updated._id ? updated : t)));
+      })
+      .catch(err => {
+        console.error('Failed to toggle done:', err);
+        toast.error('Something went wrong. Failed to mark done');
       });
   };
 
@@ -199,9 +209,9 @@ function App() {
           Add
         </button>
       </form>
-      <p className={alert_d}>{alert}</p>
       <TaskList tasks={tasks} deleteTask={deleteTask} updateTask={updateTask} toggleTask={toggleTask} clear={clearAll} />
       <Footer />
+      <ToastContainer position='top-right' autoClose={3000} />;
     </div>
   );
 }
