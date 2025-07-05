@@ -60,7 +60,7 @@ input, button {
   transition: 0.3s ease;
 }
 
-input, button.lg {
+input[type="text"], button.lg {
   box-sizing: border-box;
   width: 100%;
 }
