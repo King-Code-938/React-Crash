@@ -103,7 +103,6 @@ function App() {
   usePolling(() => {
     fetchTasks(API_URL, token)
       .then(data => {
-        console.log('Fetched data:', data); // Add this
         if (!Array.isArray(data)) {
           console.error('Expected an array but got:', data);
           toast.error('Failed to load tasks: invalid format');
@@ -231,7 +230,7 @@ function App() {
           path='/'
           element={
             <PrivateRoute token={token}>
-              <TaskForm newTask={newTask} setNewTask={setNewTask} addTask={addTask} maxReached={tasks >= 15} />
+              <TaskForm newTask={newTask} setNewTask={setNewTask} addTask={addTask} tasks={tasks} />
               {isLoading ? (
                 <p>Loading...</p>
               ) : (
