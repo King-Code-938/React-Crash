@@ -230,14 +230,14 @@ function App() {
         <Route
           path='/'
           element={
-            <>
+            <PrivateRoute token={token}>
               <TaskForm newTask={newTask} setNewTask={setNewTask} addTask={addTask} maxReached={tasks >= 15} />
               {isLoading ? (
                 <p>Loading...</p>
               ) : (
                 <TaskList tasks={tasks} deleteTask={deleteTasks} updateTask={updateTasks} toggleTask={toggleTask} clear={clearAll} />
               )}
-            </>
+            </PrivateRoute>
           }
         />
         <Route
