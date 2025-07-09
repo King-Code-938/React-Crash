@@ -128,6 +128,8 @@ function App() {
       if (limit) return;
       toast.info('Limit Reached!');
       setLimit(true);
+    } else {
+      setLimit(false);
     }
   }); // fetch every 5 seconds
 
@@ -158,8 +160,11 @@ function App() {
       });
     setNewTask('');
     if (tasks.length >= 14) {
+      if (limit) return;
       toast.info('Limit Reached!');
       setLimit(true);
+    } else {
+      setLimit(false);
     }
   };
 
