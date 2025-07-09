@@ -25,6 +25,7 @@ function App() {
   const [isServerActive, setIsServerActive] = useState(true);
   const [token, setToken] = useState(() => localStorage.getItem('token') || null);
   const [isLoading, setIsLoading] = useState(true);
+  const [limit, setLimit] = useState(false);
 
   const logout = () => {
     setToken(null);
@@ -123,6 +124,10 @@ function App() {
           toast.error(<span>Network Disconnected</span>);
         }
       });
+    if (tasks.length >= 14) {
+      toast.info('Limit Reached!');
+      setLimit(true);
+    }
   }); // fetch every 5 seconds
 
   useEffect(() => {
@@ -153,6 +158,7 @@ function App() {
     setNewTask('');
     if (tasks.length >= 14) {
       toast.info('Limit Reached!');
+      setLimit(true);
     }
   };
 
@@ -230,7 +236,7 @@ function App() {
           path='/'
           element={
             <PrivateRoute token={token}>
-              <TaskForm newTask={newTask} setNewTask={setNewTask} addTask={addTask} tasks={tasks} />
+              <TaskForm newTask={newTask} setNewTask={setNewTask} addTask={addTask} limit={limit} />
               {isLoading ? (
                 <p>Loading...</p>
               ) : (
@@ -250,7 +256,7 @@ function App() {
         <Route path='*' element={<Navigate to={token ? '/' : '/login'} />} />
       </Routes>
       <Footer />
-      <ToastContainer position='top-center' autoClose={3000} />
+      <ToastContainer position='top-right' autoClose={3000} />
     </Router>
   );
 }
