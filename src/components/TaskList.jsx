@@ -4,14 +4,6 @@ import './TaskList.css';
 function TaskList({ tasks, deleteTask, updateTask, toggleTask, clear }) {
   const [editId, setEditId] = useState(null);
   const [editText, setEditText] = useState('');
-  const [state, setState] = useState('Loading...');
-
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setState('No tasks yet. Add something!');
-    }, 8000);
-    return () => clearTimeout(timeout);
-  });
 
   if (tasks.length === 0) {
     return <p className='empty-msg'>{state}</p>;
@@ -20,7 +12,7 @@ function TaskList({ tasks, deleteTask, updateTask, toggleTask, clear }) {
   if (!Array.isArray(tasks)) {
     return <p>Error loading tasks.</p>;
   }
-  
+
   const handleEdit = (id, text) => {
     setEditId(id);
     setEditText(text);

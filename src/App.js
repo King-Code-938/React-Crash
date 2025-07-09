@@ -4,6 +4,7 @@ import TaskList from './components/TaskList';
 import AuthForm from './components/AuthForm';
 import Settings from './components/Settings';
 import Navbar from './components/Navbar';
+import { fetchTasks, createTask, deleteTask, updateTask, deleteAllTask } from './services/api';
 import { ToastContainer, toast } from 'react-toastify';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode'; // ✅ works with latest version
@@ -11,6 +12,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import './App.css';
 import './styles.css';
 import { useState, useEffect } from 'react';
+import usePolling from './hooks/usePolling';
 
 function App() {
   const [tasks, setTasks] = useState([]);
@@ -20,6 +22,7 @@ function App() {
   });
   const [isServerActive, setIsServerActive] = useState(true);
   const [token, setToken] = useState(() => localStorage.getItem('token') || null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const logout = () => {
     setToken(null);
@@ -41,40 +44,37 @@ function App() {
 
   const username = getUsernameFromToken(token);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      fetch(SERVER_URL, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-      })
-        .then(res => {
-          setIsServerActive(res.ok);
-          if (res.status === 401) {
-            toast.error(
-              <>
-                <b>Session Expired:</b> Logged Out
-              </>
-            );
-            setTimeout(() => {
-              logout();
-            }, 3000);
-          }
-        })
-        .catch(err => {
-          setIsServerActive(false);
+  usePolling(() => {
+    fetch(SERVER_URL, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then(res => {
+        setIsServerActive(res.ok);
+        if (res.status === 401) {
           toast.error(
-            <span>
-              <b>Internal Server Error: </b> Reload page
-            </span>
+            <>
+              <b>Session Expired:</b> Logged Out
+            </>
           );
-          console.warn('Server: ', isServerActive, 'Server active check failed: ', err);
-        });
-    }, 5000);
-    return () => clearInterval(interval);
-  });
+          setTimeout(() => {
+            logout();
+          }, 3000);
+        }
+      })
+      .catch(err => {
+        setIsServerActive(false);
+        toast.error(
+          <span>
+            <b>Internal Server Error: </b> Reload page
+          </span>
+        );
+        console.warn('Server: ', isServerActive, 'Server active check failed: ', err);
+      });
+  }); // Poll every 5 seconds
   useEffect(() => {
     if (!isServerActive) {
       toast.error(
@@ -84,42 +84,31 @@ function App() {
       );
     }
   });
-  useEffect(() => {
-    const interval = setInterval(() => {
-      fetch(API_URL, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
+  usePolling(() => {
+    fetchTasks(API_URL, token)
+      .then(data => {
+        console.log('Fetched data:', data); // Add this
+        if (!Array.isArray(data)) {
+          console.error('Expected an array but got:', data);
+          toast.error('Failed to load tasks: invalid format');
+          return;
+        }
+
+        const current = JSON.stringify(tasks);
+        const incoming = JSON.stringify(data);
+        setIsLoading(false);
+        if (incoming !== current) {
+          setTasks(data);
+        }
       })
-        .then(res => res.json())
-        .then(data => {
-          console.log('Fetched data:', data); // Add this
-          if (!Array.isArray(data)) {
-            console.error('Expected an array but got:', data);
-            toast.error('Failed to load tasks: invalid format');
-            return;
-          }
-
-          const current = JSON.stringify(tasks);
-          const incoming = JSON.stringify(data);
-
-          if (incoming !== current) {
-            setTasks(data);
-          }
-        })
-        .catch(err => {
-          console.error('Polling error:', err);
-          console.warn(JSON.stringify(err));
-          if (err.message) {
-            toast.error(<span>Network Disconnected</span>);
-          }
-        });
-    }, 5000); // fetch every 5 seconds
-
-    return () => clearInterval(interval);
-  }, [token, API_URL]);
+      .catch(err => {
+        console.error('Polling error:', err);
+        console.warn(JSON.stringify(err));
+        if (err.message) {
+          toast.error(<span>Network Disconnected</span>);
+        }
+      });
+  }); // fetch every 5 seconds
 
   useEffect(() => {
     document.body.className = darkMode ? 'dark' : 'light';
@@ -137,15 +126,7 @@ function App() {
       toast.info('Task already exists');
       return;
     }
-    fetch(API_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ text: trimmed }),
-    })
-      .then(res => res.json())
+    createTask(API_URL, token, trimmed)
       .then(newTask => {
         setTasks([...tasks, newTask]);
         toast.success(<span>📝 New task added!</span>);
@@ -160,16 +141,10 @@ function App() {
     }
   };
 
-  const deleteTask = taskId => {
+  const deleteTasks = taskId => {
     const confirm = window.confirm('Are you sure you want to delete this task?');
     if (confirm) {
-      fetch(`${API_URL}/${taskId}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-      })
+      deleteTask(API_URL, token, taskId)
         .then(() => {
           setTasks(tasks.filter(t => t._id !== taskId));
           toast.warn('Task Deleted');
@@ -181,16 +156,8 @@ function App() {
     }
   };
 
-  const updateTask = (taskId, input) => {
-    fetch(`${API_URL}/${taskId}`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ text: input }),
-    })
-      .then(res => res.json())
+  const updateTasks = (taskId, input) => {
+    updateTask(API_URL, token, taskId, { text: input })
       .then(updated => {
         setTasks(tasks.map(t => (t._id === updated._id ? updated : t)));
         toast.success('Task updated successfully!');
@@ -204,13 +171,7 @@ function App() {
   const clearAll = () => {
     const confirm = window.confirm('Are you sure you want to clear all tasks?');
     if (confirm) {
-      fetch(`${API_URL}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-      })
+      deleteAllTask(API_URL, token)
         .then(() => {
           setTasks([]);
           toast.warn('All tasks deleted');
@@ -270,7 +231,11 @@ function App() {
                   Add
                 </button>
               </form>
-              <TaskList tasks={tasks} deleteTask={deleteTask} updateTask={updateTask} toggleTask={toggleTask} clear={clearAll} />
+              {isLoading ? (
+                <p>Loading...</p>
+              ) : (
+                <TaskList tasks={tasks} deleteTask={deleteTasks} updateTask={updateTasks} toggleTask={toggleTask} clear={clearAll} />
+              )}
             </>
           }
         />
