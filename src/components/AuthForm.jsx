@@ -6,25 +6,38 @@ function AuthForm({ setToken, AUTH_API_URL }) {
   const [form, setForm] = useState({ username: '', password: '' });
   const [data, setData] = useState();
 
-  const handleSubmit = async e => {
+  const handleSubmit = e => {
     e.preventDefault();
-    const res = await fetch(`${AUTH_API_URL}/${mode}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form),
-    });
 
-    setData(await res.json());
-    if (res.ok && data.token) {
-      localStorage.setItem('token', data.token);
-      setToken(data.token);
-    } else {
-      alert(data.message || 'Authentication failed');
-    }
+    fetch(`${AUTH_API_URL}/${mode}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, password }),
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.token) {
+          // ✅ Save token in both localStorage and App state
+          localStorage.setItem('token', data.token);
+          setToken(data.token);
+          setData(data);
+          toast.success(mode, ' successful');
+        } else {
+          toast.error(data.message || 'Login failed');
+        }
+      })
+      .catch(err => {
+        console.error('Login error:', err);
+        toast.error('Login failed. Check network.');
+      });
   };
 
   if (data.token) {
     return <Navigate to={'/'} />;
+  } else if (data && !data.token) {
+    return <Navigate to={'/login'}/>
   } else {
     return (
       <form onSubmit={handleSubmit}>
