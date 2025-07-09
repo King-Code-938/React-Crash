@@ -125,9 +125,10 @@ function App() {
         }
       });
     if (tasks.length >= 14) {
-      if (limit) return;
-      toast.info('Limit Reached!');
-      setLimit(true);
+      if (!limit) {
+        toast.info('Limit Reached!');
+        setLimit(true);
+      }
     } else {
       setLimit(false);
     }
@@ -160,9 +161,10 @@ function App() {
       });
     setNewTask('');
     if (tasks.length >= 14) {
-      if (limit) return;
-      toast.info('Limit Reached!');
-      setLimit(true);
+      if (!limit) {
+        toast.info('Limit Reached!');
+        setLimit(true);
+      }
     } else {
       setLimit(false);
     }
@@ -180,6 +182,14 @@ function App() {
           console.error('Failed to delete:', err);
           toast.error('Something went wrong. Failed to delete task');
         });
+      if (tasks.length >= 14) {
+        if (!limit) {
+          toast.info('Limit Reached!');
+          setLimit(true);
+        }
+      } else {
+        setLimit(false);
+      }
     }
   };
 
