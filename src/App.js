@@ -98,7 +98,7 @@ function App() {
         logout();
       }
     } catch {}
-  }, [token]);
+  }, []);
 
   usePolling(() => {
     fetchTasks(API_URL, token)
