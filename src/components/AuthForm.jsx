@@ -16,7 +16,7 @@ function AuthForm({ setToken, AUTH_API_URL }) {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ password: form.password, username: form.username }),
     })
       .then(res => res.json())
       .then(data => {
