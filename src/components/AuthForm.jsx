@@ -6,7 +6,7 @@ import 'react-toastify/dist/ReactToastify.css';
 function AuthForm({ setToken, AUTH_API_URL }) {
   const [mode, setMode] = useState('login');
   const [form, setForm] = useState({ username: '', password: '' });
-  const [data, setData] = useState();
+  const [data, setData] = useState(false);
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -24,7 +24,7 @@ function AuthForm({ setToken, AUTH_API_URL }) {
           // ✅ Save token in both localStorage and App state
           localStorage.setItem('token', data.token);
           setToken(data.token);
-          setData(data);
+          setData(true);
           toast.success(mode, ' successful');
         } else {
           toast.error(data.message || 'Login failed');
@@ -36,10 +36,10 @@ function AuthForm({ setToken, AUTH_API_URL }) {
       });
   };
 
-  if (data.token) {
+  if (data && mode === 'login') {
     return <Navigate to={'/'} />;
-  } else if (data && !data.token) {
-    return <Navigate to={'/login'}/>
+  } else if (data && mode === 'register') {
+    return <Navigate to={'/login'} />;
   } else {
     return (
       <form onSubmit={handleSubmit}>
