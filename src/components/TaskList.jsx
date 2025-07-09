@@ -5,10 +5,6 @@ function TaskList({ tasks, deleteTask, updateTask, toggleTask, clear }) {
   const [editId, setEditId] = useState(null);
   const [editText, setEditText] = useState('');
 
-  if (tasks.length === 0) {
-    return <p className='empty-msg'>{state}</p>;
-  }
-
   if (!Array.isArray(tasks)) {
     return <p>Error loading tasks.</p>;
   }
