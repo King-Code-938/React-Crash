@@ -221,7 +221,7 @@ function App() {
 
   return (
     <Router>
-      <Header title='Task Tracker' /> <Navbar username={username} />
+      <Header title='Task Tracker' /> {token ? <Navbar username={username} /> || null : null}
       <Routes>
         {/* Public Route */}
         <Route path='/login' element={<AuthForm setToken={setToken} AUTH_API_URL={AUTH_API_URL} />} />
