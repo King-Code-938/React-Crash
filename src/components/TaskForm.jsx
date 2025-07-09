@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 function TaskForm({ newTask, setNewTask, addTask, tasks }) {
   const [disabled, setDisabled] = useState(tasks >= 15);
@@ -6,9 +6,9 @@ function TaskForm({ newTask, setNewTask, addTask, tasks }) {
   useEffect(() => {
     if (tasks >= 15) {
       setNewTask('');
-      disabled = true;
+      setDisabled(true);
     }
-  }, [tasks, setNewTask]);
+  }, [tasks, setNewTask, setDisabled]);
 
   return (
     <form
