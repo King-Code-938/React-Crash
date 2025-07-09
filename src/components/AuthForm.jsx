@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { Navigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function AuthForm({ setToken, AUTH_API_URL }) {
   const [mode, setMode] = useState('login');
