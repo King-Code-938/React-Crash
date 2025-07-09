@@ -16,6 +16,7 @@ function AuthForm({ setToken, AUTH_API_URL }) {
     if (res.ok && data.token) {
       localStorage.setItem('token', data.token);
       setToken(data.token);
+      return <Navigate to={data.token ? '/' : '/login'} />;
     } else {
       alert(data.message || 'Authentication failed');
     }
