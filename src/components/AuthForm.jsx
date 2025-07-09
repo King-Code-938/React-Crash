@@ -11,29 +11,52 @@ function AuthForm({ setToken, AUTH_API_URL }) {
   const handleSubmit = e => {
     e.preventDefault();
 
-    fetch(`${AUTH_API_URL}/${mode}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ password: form.password, username: form.username }),
-    })
-      .then(res => res.json())
-      .then(data => {
-        if (data.token) {
-          // ✅ Save token in both localStorage and App state
-          localStorage.setItem('token', data.token);
-          setToken(data.token);
-          setData(true);
-          toast.success(mode, ' successful');
-        } else {
-          toast.error(data.message || 'Login failed');
-        }
+    if (!form.username || !form.password) {
+      toast.error('Username and password are required');
+      return;
+    }
+
+    if (mode === 'login') {
+      fetch(`${AUTH_API_URL}/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ password: form.password, username: form.username }),
       })
-      .catch(err => {
-        console.error('Login error:', err);
-        toast.error('Login failed. Check network.');
-      });
+        .then(res => res.json())
+        .then(data => {
+          if (data.token) {
+            // ✅ Save token in both localStorage and App state
+            localStorage.setItem('token', data.token);
+            setToken(data.token);
+            setData(true);
+            toast.success(mode, ' successful');
+          } else {
+            toast.error(data.message || 'Login failed');
+          }
+        })
+        .catch(err => {
+          console.error('Login error:', err);
+          toast.error('Login failed. Check network.');
+        });
+    } else if (mode === 'register') {
+      fetch(`${AUTH_API_URL}/register`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ password: form.password, username: form.username }),
+      })
+        .then(res => res.json())
+        .then(data => {
+          console.info('Registration response:', data);
+        })
+        .catch(err => {
+          console.error('Registration error:', err);
+          toast.error('Registration failed. Check network.');
+        });
+    }
   };
 
   if (data && mode === 'login') {
@@ -62,6 +85,6 @@ function AuthForm({ setToken, AUTH_API_URL }) {
       </form>
     );
   }
-}
+  };
 
 export default AuthForm;
