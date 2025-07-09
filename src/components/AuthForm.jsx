@@ -1,8 +1,10 @@
 import { useState } from 'react';
+import { Navigate } from 'react-router-dom';
 
 function AuthForm({ setToken, AUTH_API_URL }) {
   const [mode, setMode] = useState('login');
   const [form, setForm] = useState({ username: '', password: '' });
+  const [data, setData] = useState();
 
   const handleSubmit = async e => {
     e.preventDefault();
@@ -12,7 +14,7 @@ function AuthForm({ setToken, AUTH_API_URL }) {
       body: JSON.stringify(form),
     });
 
-    const data = await res.json();
+    setData(await res.json());
     if (res.ok && data.token) {
       localStorage.setItem('token', data.token);
       setToken(data.token);
