@@ -1,13 +1,15 @@
 import Header from './components/Header';
 import Footer from './components/Footer';
-import TaskList from './components/TaskList';
-import AuthForm from './components/AuthForm';
-import Settings from './components/Settings';
 import Navbar from './components/Navbar';
+import Settings from './components/Settings';
+import TaskList from './components/TaskList';
+import TaskForm from './components/TaskForm';
+import AuthForm from './components/AuthForm';
+import PrivateRoute from './components/PrivateRoute';
 import { fetchTasks, createTask, deleteTask, updateTask, deleteAllTask } from './services/api';
 import { ToastContainer, toast } from 'react-toastify';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { jwtDecode } from 'jwt-decode'; // ✅ works with latest version
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
 import 'react-toastify/dist/ReactToastify.css';
 import './App.css';
 import './styles.css';
@@ -36,7 +38,7 @@ function App() {
   const getUsernameFromToken = token => {
     try {
       const decoded = jwtDecode(token);
-      return decoded?.username || decoded?.name || 'User';
+      return decoded?.username || decoded?.name || decoded?.user || 'User';
     } catch (err) {
       return 'User';
     }
@@ -75,6 +77,7 @@ function App() {
         console.warn('Server: ', isServerActive, 'Server active check failed: ', err);
       });
   }); // Poll every 5 seconds
+
   useEffect(() => {
     if (!isServerActive) {
       toast.error(
@@ -84,6 +87,19 @@ function App() {
       );
     }
   });
+
+  useEffect(() => {
+    try {
+      const decoded = jwtDecode(token);
+      const exp = decoded.exp * 1000;
+      const now = Date.now();
+      if (now >= exp) {
+        toast.info('Session expired');
+        logout();
+      }
+    } catch {}
+  }, [token]);
+
   usePolling(() => {
     fetchTasks(API_URL, token)
       .then(data => {
@@ -203,34 +219,19 @@ function App() {
       });
   };
 
-  if (!token) {
-    return <AuthForm setToken={setToken} AUTH_API_URL={AUTH_API_URL} />;
-  }
-
   return (
     <Router>
       <Header title='Task Tracker' /> <Navbar username={username} />
       <Routes>
+        {/* Public Route */}
+        <Route path='/login' element={<AuthForm setToken={setToken} AUTH_API_URL={AUTH_API_URL} />} />
+
+        {/* Protected Routes */}
         <Route
           path='/'
           element={
             <>
-              <form
-                onSubmit={e => {
-                  e.preventDefault();
-                  addTask();
-                }}>
-                <input
-                  type='text'
-                  placeholder='Enter new task'
-                  value={newTask}
-                  onChange={e => setNewTask(e.target.value)}
-                  disabled={tasks.length >= 15}
-                />
-                <button type='submit' disabled={!newTask.trim()}>
-                  Add
-                </button>
-              </form>
+              <TaskForm newTask={newTask} setNewTask={setNewTask} addTask={addTask} maxReached={tasks >= 15} />
               {isLoading ? (
                 <p>Loading...</p>
               ) : (
@@ -239,7 +240,15 @@ function App() {
             </>
           }
         />
-        <Route path='/settings' element={<Settings username={username} darkMode={darkMode} setDarkMode={setDarkMode} logout={logout} />} />
+        <Route
+          path='/settings'
+          element={
+            <PrivateRoute token={token}>
+              <Settings username={username} darkMode={darkMode} setDarkMode={setDarkMode} logout={logout} />
+            </PrivateRoute>
+          }
+        />
+        <Route path='*' element={<Navigate to={token ? '/' : '/login'} />} />
       </Routes>
       <Footer />
       <ToastContainer position='top-center' autoClose={3000} />
