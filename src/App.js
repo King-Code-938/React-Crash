@@ -125,6 +125,7 @@ function App() {
         }
       });
     if (tasks.length >= 14) {
+      if (limit) return;
       toast.info('Limit Reached!');
       setLimit(true);
     }
