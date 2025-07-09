@@ -16,25 +16,35 @@ function AuthForm({ setToken, AUTH_API_URL }) {
     if (res.ok && data.token) {
       localStorage.setItem('token', data.token);
       setToken(data.token);
-      return <Navigate to={data.token ? '/' : '/login'} />;
     } else {
       alert(data.message || 'Authentication failed');
     }
   };
 
-  return (
-    <form onSubmit={handleSubmit}>
-      <h2>{mode === 'login' ? 'Login' : 'Register'}</h2>
-      <input type='text' placeholder='Username' value={form.username} onChange={e => setForm({ ...form, username: e.target.value })} />
-      <input type='password' placeholder='Password' value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} />
-      <button className='lg' type='submit'>
-        {mode}
-      </button>
-      <p onClick={() => setMode(mode === 'login' ? 'register' : 'login')} style={{ cursor: 'pointer' }}>
-        {mode === 'login' ? 'Create an account' : 'Back to login'}
-      </p>
-    </form>
-  );
+  if (data.token) {
+    return <Navigate to={'/'} />;
+  } else {
+    return (
+      <form onSubmit={handleSubmit}>
+        <h2>{mode === 'login' ? 'Login' : 'Register'}</h2>
+        <input type='text' placeholder='Username' value={form.username} onChange={e => setForm({ ...form, username: e.target.value })} />
+        <input
+          type='password'
+          placeholder='Password'
+          value={form.password}
+          onChange={e => setForm({ ...form, password: e.target.value })}
+        />
+        <button className='lg' type='submit'>
+          {mode}
+        </button>
+        <p
+          onClick={() => setMode(mode === 'login' ? 'register' : 'login')}
+          style={{ cursor: 'pointer', color: 'blue', textDecoration: 'underline' }}>
+          {mode === 'login' ? 'Create an account' : 'Back to login'}
+        </p>
+      </form>
+    );
+  }
 }
 
 export default AuthForm;
