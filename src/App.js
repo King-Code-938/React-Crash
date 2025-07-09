@@ -124,7 +124,7 @@ function App() {
           toast.error(<span>Network Disconnected</span>);
         }
       });
-    if (tasks.length >= 14) {
+    if (tasks.length >= 15) {
       if (!limit) {
         toast.info('Limit Reached!');
         setLimit(true);
@@ -160,7 +160,7 @@ function App() {
         toast.error('Something went wrong. Failed to add task');
       });
     setNewTask('');
-    if (tasks.length >= 14) {
+    if (tasks.length >= 15) {
       if (!limit) {
         toast.info('Limit Reached!');
         setLimit(true);
@@ -182,7 +182,7 @@ function App() {
           console.error('Failed to delete:', err);
           toast.error('Something went wrong. Failed to delete task');
         });
-      if (tasks.length >= 14) {
+      if (tasks.length >= 15) {
         if (!limit) {
           toast.info('Limit Reached!');
           setLimit(true);
