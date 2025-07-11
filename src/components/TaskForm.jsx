@@ -1,5 +1,3 @@
-import { useEffect, useState } from 'react';
-
 function TaskForm({ newTask, setNewTask, addTask, limit }) {
   return (
     <form
@@ -7,7 +5,7 @@ function TaskForm({ newTask, setNewTask, addTask, limit }) {
         e.preventDefault();
         addTask();
       }}>
-      <input type='text' placeholder='Enter new task' value={newTask} onChange={e => setNewTask(e.target.value)} disabled={limit} />
+      <input type='text' placeholder='What needs to be done?' value={newTask} onChange={e => setNewTask(e.target.value)} disabled={limit} />
       <button type='submit' disabled={!newTask.trim()}>
         Add
       </button>
@@ -16,5 +14,3 @@ function TaskForm({ newTask, setNewTask, addTask, limit }) {
 }
 
 export default TaskForm;
-// This component handles the task input form.
-// It takes `newTask`, `setNewTask`, `addTask`, and `maxReached` as props.

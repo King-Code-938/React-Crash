@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import './TaskList.css';
 
 function TaskList({ tasks, deleteTask, updateTask, toggleTask, clear }) {

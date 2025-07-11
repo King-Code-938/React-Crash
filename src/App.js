@@ -64,11 +64,6 @@ function App() {
       })
       .catch(err => {
         setIsServerActive(false);
-        toast.error(
-          <span>
-            <b>Internal Server Error: </b> Reload page
-          </span>
-        );
         console.warn('Server: ', isServerActive, '\nServer active check failed: ', err);
       });
   }); // Poll every 5 seconds
@@ -270,7 +265,7 @@ function App() {
         <Route path='*' element={<Navigate to={token ? '/' : '/login'} />} />
       </Routes>
       <Footer />
-      <ToastContainer position='top-right' autoClose={3000} />
+      <ToastContainer position={window.innerWidth < 600 ? 'bottom-center' : 'top-right'} autoClose={3000} />
     </Router>
   );
 }

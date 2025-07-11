@@ -38,32 +38,49 @@
 }
 
 body {
-  transition: background 0.3s ease;
-  max-width: 600px;
-  margin: auto;
+  font-family: sans-serif;
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--text);
+}
+
+form, .settings, .task-wrapper {
+  max-width: 500px;
+  margin: 1rem auto;
   padding: 1rem;
 }
 
-button {
-  margin: 0.5rem;
-  cursor: pointer;
-  background: #0028f3;
-  color: white;
-  box-shadow: #001061 1px 1px 3px;
-}
-
-input, button {
-  padding: 0.5rem;
-  font-size: 1rem;
-  border: none;
-  border-radius: 4px;
-  transition: 0.3s ease;
-}
-
-input[type="text"], button.lg {
-  box-sizing: border-box;
+input[type='text'],
+input[type='email'],
+input[type='password'] {
   width: 100%;
+  padding: 10px;
+  margin-bottom: 0.5rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
 }
+
+button {
+  cursor: pointer;
+  padding: 10px;
+  margin-left: 0.5rem;
+  border-radius: 6px;
+  border: none;
+  background-color: #2d9cdb;
+  color: white;
+  transition: background-color 0.2s ease-in-out;
+}
+
+button:hover {
+  background-color: #2374a8;
+}
+
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
 
 button.md {
   width: 40%;
@@ -78,4 +95,27 @@ body.dark {
 body.light {
   background: #f1f1f1;
   color: #111;
+}
+
+@media (max-width: 600px) {
+  .task-wrapper, .settings, form {
+    padding: 0.5rem;
+    margin: 0.5rem;
+  }
+
+  .task-wrapper button {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+}
+
+.fade-in {
+  opacity: 0;
+  animation: fadeIn ease 0.6s forwards;
+}
+
+@keyframes fadeIn {
+  100% {
+    opacity: 1;
+  }
 }

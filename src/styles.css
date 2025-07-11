@@ -21,6 +21,19 @@
 
 .toast-tip {
   font-size: 0.75em;
-  color: #9999b9;
+  color: #99a7b9;
   font-weight: bold;
+}
+
+.fab {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #2d9cdb;
+  color: white;
+  font-size: 1.5rem;
+  padding: 0.7rem 1rem;
+  border-radius: 50%;
+  border: none;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
