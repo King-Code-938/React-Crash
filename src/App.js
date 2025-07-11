@@ -49,6 +49,9 @@ function App() {
   const username = getUsernameFromToken(token);
 
   usePolling(() => {
+    if (!token) {
+      return;
+    }
     fetch(SERVER_URL, {
       method: 'GET',
       headers: {
@@ -83,6 +86,10 @@ function App() {
   }, []);
 
   usePolling(() => {
+    if (!token) {
+      return;
+    }
+
     fetchTasks(API_URL, token)
       .then(data => {
         if (!Array.isArray(data)) {
