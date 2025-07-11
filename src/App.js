@@ -6,6 +6,7 @@ import TaskList from './components/TaskList';
 import TaskForm from './components/TaskForm';
 import AuthForm from './components/AuthForm';
 import PrivateRoute from './components/PrivateRoute';
+import PublicOnly from './components/PublicOnly';
 import { fetchTasks, createTask, deleteTask, updateTask, deleteAllTask } from './services/api';
 import { ToastContainer, toast } from 'react-toastify';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
@@ -229,8 +230,9 @@ function App() {
       <Header title='Task Tracker' /> {token ? <Navbar username={username} /> || null : null}
       <Routes>
         {/* Public Route */}
-        <Route path='/login' element={<AuthForm setToken={setToken} AUTH_API_URL={AUTH_API_URL} />} />
-
+        <PublicOnly token={token}>
+          <Route path='/login' element={<AuthForm setToken={setToken} AUTH_API_URL={AUTH_API_URL} />} />
+        </PublicOnly>
         {/* Protected Routes */}
         <Route
           path='/'
