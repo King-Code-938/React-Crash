@@ -57,16 +57,6 @@ function App() {
     })
       .then(res => {
         setIsServerActive(res.ok);
-        if (res.status === 401) {
-          toast.error(
-            <>
-              <b>Session Expired:</b> Logged Out
-            </>
-          );
-          setTimeout(() => {
-            logout();
-          }, 3000);
-        }
       })
       .catch(err => {
         setIsServerActive(false);
@@ -75,19 +65,9 @@ function App() {
             <b>Internal Server Error: </b> Reload page
           </span>
         );
-        console.warn('Server: ', isServerActive, 'Server active check failed: ', err);
+        console.warn('Server: ', isServerActive, '\nServer active check failed: ', err);
       });
   }); // Poll every 5 seconds
-
-  useEffect(() => {
-    if (!isServerActive) {
-      toast.error(
-        <span>
-          <b>Internal Server Error:</b> Please reload
-        </span>
-      );
-    }
-  });
 
   useEffect(() => {
     try {
@@ -106,7 +86,11 @@ function App() {
       .then(data => {
         if (!Array.isArray(data)) {
           console.error('Expected an array but got:', data);
-          toast.error('Failed to load tasks: invalid format');
+          toast.error(
+            <>
+              Failed to load tasks.<span className='toast-tip'> Reload page</span>
+            </>
+          );
           return;
         }
 

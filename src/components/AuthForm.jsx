@@ -31,7 +31,7 @@ function AuthForm({ setToken, AUTH_API_URL }) {
             localStorage.setItem('token', data.token);
             setToken(data.token);
             setData(true);
-            toast.success(mode, ' successful');
+            toast.success(mode + ' successful');
           } else {
             toast.error(data.message || 'Login failed');
           }
