@@ -37,7 +37,7 @@ function AuthForm({ setToken, AUTH_API_URL }) {
     } else if (mode === 'register') {
       register(AUTH_API_URL, form.username, form.email, form.inviteCode, form.password)
         .then(data => {
-          console.info('Registration response:', data);
+          console.log('Registration response:', data);
         })
         .catch(err => {
           console.error('Registration error:', err);
