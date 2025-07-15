@@ -7,7 +7,9 @@ import TaskForm from './components/TaskForm';
 import AuthForm from './components/AuthForm';
 import PrivateRoute from './components/PrivateRoute';
 import PublicOnly from './components/PublicOnly';
-import { fetchTasks, createTask, deleteTask, updateTask, deleteAllTask } from './services/api';
+import { fetchTasks, createTask, deleteTask, updateTask, deleteAllTask } from './services/tasksApi';
+import { getUserPreferences, updateUserPreferences } from './services/userApi';
+import { usePolling } from './hooks/usePolling';
 import { ToastContainer, toast } from 'react-toastify';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
@@ -15,7 +17,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import './App.css';
 import './styles.css';
 import { useState, useEffect } from 'react';
-import usePolling from './hooks/usePolling';
 
 function App() {
   const [tasks, setTasks] = useState([]);
@@ -23,6 +24,7 @@ function App() {
   const [darkMode, setDarkMode] = useState(() => {
     return localStorage.getItem('darkMode') === 'true';
   });
+  const [bio, setBio] = useState('');
   const [isServerActive, setIsServerActive] = useState(true);
   const [token, setToken] = useState(() => localStorage.getItem('token') || null);
   const [isLoading, setIsLoading] = useState(true);
@@ -33,9 +35,10 @@ function App() {
     localStorage.removeItem('token');
   };
 
-  const API_URL = process.env.TASK_API_URL || 'https://react-crash-backend.onrender.com/api/tasks';
-  const SERVER_URL = process.env.VITE_API_URL || 'https://react-crash-backend.onrender.com';
-  const AUTH_API_URL = process.env.AUTH_API_URL || 'https://react-crash-backend.onrender.com/api/auth';
+  const API_URL = process.env.TASK_API_URL || null;
+  const SERVER_URL = process.env.VITE_API_URL || null;
+  const AUTH_API_URL = process.env.AUTH_API_URL || null;
+  const USER_API_URL = process.env.USER_API_URL || null;
 
   const getUsernameFromToken = token => {
     try {
@@ -71,6 +74,7 @@ function App() {
   useEffect(() => {
     try {
       const decoded = jwtDecode(token);
+      console.warn('Decoded Token: ', decoded);
       const exp = decoded.exp * 1000;
       const now = Date.now();
       if (now >= exp) {
@@ -122,9 +126,15 @@ function App() {
   }); // fetch every 5 seconds
 
   useEffect(() => {
-    document.body.className = darkMode ? 'dark' : 'light';
-    localStorage.setItem('darkMode', darkMode);
-  }, [darkMode]);
+    updateUserPreferences(USER_API_URL, token, { darkMode: darkMode, bio: bio });
+  }, [darkMode, bio]);
+
+  useEffect(() => {
+    getUserPreferences(USER_API_URL, token).then(prefs => {
+      setDarkMode(prefs.darkMode);
+      setBio(prefs.bio);
+    });
+  }, [token]);
 
   const dupExists = newTask => {
     return tasks.some(task => task.text.toLowerCase() === newTask.toLowerCase());
