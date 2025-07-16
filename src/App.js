@@ -130,6 +130,7 @@ function App() {
       return;
     }
     updateUserPreferences(USER_API_URL, token, { darkMode: darkMode, bio: bio });
+    console.warn('Dark Mode:', darkMode, 'Bio:', bio);
     setDarkMode(darkMode);
     setBio(bio);
   }, [darkMode, bio]);
@@ -140,6 +141,7 @@ function App() {
     }
 
     getUserPreferences(USER_API_URL, token).then(prefs => {
+      console.warn('User Preferences:', prefs);
       setDarkMode(prefs.darkMode);
       setBio(prefs.bio);
     });
