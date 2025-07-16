@@ -52,15 +52,20 @@ function AuthForm({ setToken, AUTH_API_URL }) {
   if (state && mode === 'login') {
     return <Navigate to={'/'} />;
   } else if (state && mode === 'register') {
-    return <Navigate to={'/login'} />;
+    return <Navigate to={'/authenticate'} />;
   } else {
     return (
       <form onSubmit={handleSubmit}>
         <h2>{mode === 'login' ? 'Login' : 'Register'}</h2>
-        <input type='text' placeholder='Username' value={form.username} onChange={e => setForm({ ...form, username: e.target.value })} />
+        <input type='email' placeholder='Email' value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} />
         {mode === 'register' && (
           <>
-            <input type='email' placeholder='Email' value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} />
+            <input
+              type='text'
+              placeholder='Username'
+              value={form.username}
+              onChange={e => setForm({ ...form, username: e.target.value })}
+            />
             <input
               type='text'
               placeholder='Invite Code'

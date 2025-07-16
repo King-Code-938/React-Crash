@@ -243,7 +243,7 @@ function App() {
       <Routes>
         {/* Public Route */}
         <Route
-          path='/login'
+          path='/authenticate'
           element={
             <PublicOnly token={token}>
               <AuthForm setToken={setToken} AUTH_API_URL={AUTH_API_URL} />
@@ -272,7 +272,7 @@ function App() {
             </PrivateRoute>
           }
         />
-        <Route path='*' element={<Navigate to={token ? '/' : '/login'} />} />
+        <Route path='*' element={<Navigate to={token ? '/' : '/authenticate'} />} />
       </Routes>
       <Footer />
       <ToastContainer position={window.innerWidth < 600 ? 'bottom-center' : 'top-right'} autoClose={3000} />
