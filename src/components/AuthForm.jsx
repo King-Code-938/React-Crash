@@ -7,7 +7,7 @@ import { login, register } from '../services/authApi';
 function AuthForm({ setToken, AUTH_API_URL }) {
   const [mode, setMode] = useState('login');
   const [form, setForm] = useState({ username: '', email: '', inviteCode: '', password: '' });
-  const [data, setData] = useState(false);
+  const [state, setState] = useState(false);
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -15,7 +15,11 @@ function AuthForm({ setToken, AUTH_API_URL }) {
     if (!form.username || !form.password) {
       toast.error('Username and password are required');
       return;
+    } else if (mode === 'register' && (!form.email || !form.inviteCode)) {
+      toast.error('Email and invite code are required for registration');
+      return;
     }
+    o;
 
     if (mode === 'login') {
       login(AUTH_API_URL, form.username, form.password)
@@ -24,7 +28,7 @@ function AuthForm({ setToken, AUTH_API_URL }) {
             // ✅ Save token in both localStorage and App state
             localStorage.setItem('token', data.token);
             setToken(data.token);
-            setData(true);
+            setState(true);
             toast.success(mode + ' successful');
           } else {
             toast.error(data.message || 'Login failed');
@@ -46,22 +50,26 @@ function AuthForm({ setToken, AUTH_API_URL }) {
     }
   };
 
-  if (data && mode === 'login') {
+  if (state && mode === 'login') {
     return <Navigate to={'/'} />;
-  } else if (data && mode === 'register') {
+  } else if (state && mode === 'register') {
     return <Navigate to={'/login'} />;
   } else {
     return (
       <form onSubmit={handleSubmit}>
         <h2>{mode === 'login' ? 'Login' : 'Register'}</h2>
         <input type='text' placeholder='Username' value={form.username} onChange={e => setForm({ ...form, username: e.target.value })} />
-        <input type='email' placeholder='Email' value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} />
-        <input
-          type='text'
-          placeholder='Invite Code'
-          value={form.inviteCode}
-          onChange={e => setForm({ ...form, inviteCode: e.target.value })}
-        />
+        {mode === 'register' && (
+          <>
+            <input type='email' placeholder='Email' value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} />
+            <input
+              type='text'
+              placeholder='Invite Code'
+              value={form.inviteCode}
+              onChange={e => setForm({ ...form, inviteCode: e.target.value })}
+            />
+          </>
+        )}
         <input
           type='password'
           placeholder='Password'
