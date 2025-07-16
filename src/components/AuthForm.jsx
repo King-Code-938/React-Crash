@@ -12,17 +12,16 @@ function AuthForm({ setToken, AUTH_API_URL }) {
   const handleSubmit = e => {
     e.preventDefault();
 
-    if (!form.username || !form.password) {
-      toast.error('Username and password are required');
+    if (!form.email || !form.password) {
+      toast.error('Email and password are required');
       return;
-    } else if (mode === 'register' && (!form.email || !form.inviteCode)) {
-      toast.error('Email and invite code are required for registration');
+    } else if (mode === 'register' && (!form.username || !form.inviteCode)) {
+      toast.error('Username and invite code are required for registration');
       return;
     }
-    o;
 
     if (mode === 'login') {
-      login(AUTH_API_URL, form.username, form.password)
+      login(AUTH_API_URL, form.email, form.password)
         .then(data => {
           if (data.token) {
             // ✅ Save token in both localStorage and App state
