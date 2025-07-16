@@ -35,10 +35,10 @@ function App() {
     localStorage.removeItem('token');
   };
 
-  const API_URL = process.env.TASK_API_URL || null;
-  const SERVER_URL = process.env.VITE_API_URL || null;
-  const AUTH_API_URL = process.env.AUTH_API_URL || null;
-  const USER_API_URL = process.env.USER_API_URL || null;
+  const API_URL = process.env.REACT_APP_TASK_API_URL || null;
+  const SERVER_URL = process.env.REACT_APP_VITE_API_URL || null;
+  const AUTH_API_URL = process.env.REACT_APP_AUTH_API_URL || null;
+  const USER_API_URL = process.env.REACT_APP_USER_API_URL || null;
 
   const getUsernameFromToken = token => {
     try {
