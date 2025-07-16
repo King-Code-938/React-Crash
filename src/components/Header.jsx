@@ -1,4 +1,6 @@
+import './Header.css';
+
 function Header({ title }) {
-  return <h1 className=''>{title}</h1>;
+  return <h1 className='page-header'>{title}</h1>;
 }
 export default Header;

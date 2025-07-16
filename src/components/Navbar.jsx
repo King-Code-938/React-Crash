@@ -1,4 +1,6 @@
 import { Link } from 'react-router-dom';
+import './Navbar.css';
+
 function Settings({ username }) {
   return (
     <nav className='navbar fade-in'>
