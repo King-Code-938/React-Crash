@@ -130,6 +130,8 @@ function App() {
       return;
     }
     updateUserPreferences(USER_API_URL, token, { darkMode: darkMode, bio: bio });
+    setDarkMode(darkMode);
+    setBio(bio);
   }, [darkMode, bio]);
 
   useEffect(() => {
