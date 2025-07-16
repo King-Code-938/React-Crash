@@ -9,7 +9,7 @@ import PrivateRoute from './components/PrivateRoute';
 import PublicOnly from './components/PublicOnly';
 import { fetchTasks, createTask, deleteTask, updateTask, deleteAllTask } from './services/tasksApi';
 import { getUserPreferences, updateUserPreferences } from './services/userApi';
-import { usePolling } from './hooks/usePolling';
+import usePolling from './hooks/usePolling';
 import { ToastContainer, toast } from 'react-toastify';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
