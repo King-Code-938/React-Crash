@@ -7,11 +7,11 @@ export const login = (url, username, password) =>
     method: 'POST',
     headers: getHeaders(),
     body: JSON.stringify({ username: username, password: password }),
-  }).then(res => res.json());
+  });
 
 export const register = (url, username, email, inviteCode, password) =>
   fetch(`${url}/register`, {
     method: 'POST',
     headers: getHeaders(),
     body: JSON.stringify({ username: username, email: email, inviteCode: inviteCode, password: password }),
-  }).then(res => res.json());
+  });
