@@ -126,10 +126,17 @@ function App() {
   }); // fetch every 5 seconds
 
   useEffect(() => {
+    if (!token) {
+      return;
+    }
     updateUserPreferences(USER_API_URL, token, { darkMode: darkMode, bio: bio });
   }, [darkMode, bio]);
 
   useEffect(() => {
+    if (!token) {
+      return;
+    }
+
     getUserPreferences(USER_API_URL, token).then(prefs => {
       setDarkMode(prefs.darkMode);
       setBio(prefs.bio);

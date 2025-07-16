@@ -2,11 +2,11 @@ const getHeaders = () => ({
   'Content-Type': 'application/json',
 });
 
-export const login = (url, username, password) =>
+export const login = (url, email, password) =>
   fetch(`${url}/login`, {
     method: 'POST',
     headers: getHeaders(),
-    body: JSON.stringify({ username: username, password: password }),
+    body: JSON.stringify({ email: email, password: password }),
   });
 
 export const register = (url, username, email, inviteCode, password) =>
