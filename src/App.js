@@ -8,7 +8,7 @@ import AuthForm from './components/AuthForm';
 import PrivateRoute from './components/PrivateRoute';
 import PublicOnly from './components/PublicOnly';
 import { fetchTasks, createTask, deleteTask, updateTask, deleteAllTask } from './services/tasksApi';
-import { getUserPreferences, updateUserPreferences } from './services/userApi';
+import { getUserPreferences, updateUserPreferences, getUser } from './services/userApi';
 import usePolling from './hooks/usePolling';
 import { ToastContainer, toast } from 'react-toastify';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
@@ -21,6 +21,7 @@ import { useState, useEffect } from 'react';
 function App() {
   const [tasks, setTasks] = useState([]);
   const [newTask, setNewTask] = useState('');
+  const [user, setUser] = useState(null);
   const [darkMode, setDarkMode] = useState(false);
   const [bio, setBio] = useState('');
   const [isServerActive, setIsServerActive] = useState(true);
@@ -38,16 +39,35 @@ function App() {
   const AUTH_API_URL = process.env.REACT_APP_AUTH_API_URL || null;
   const USER_API_URL = process.env.REACT_APP_USER_API_URL || null;
 
-  const getUsernameFromToken = token => {
+  useEffect(() => {
     try {
+      if (!token) {
+        return;
+      }
       const decoded = jwtDecode(token);
-      return decoded?.username || decoded?.name || decoded?.user || 'User';
-    } catch (err) {
-      return 'User';
-    }
-  };
+      console.warn('Decoded Token: ', decoded);
+      const exp = decoded.exp * 1000;
+      const now = Date.now();
+      if (now >= exp) {
+        toast.info('Session expired');
+        logout();
+      }
+    } catch {}
+  }, []);
 
-  const username = getUsernameFromToken(token);
+  useEffect(() => {
+    if (!token) {
+      return;
+    }
+    getUser(USER_API_URL, token)
+      .then(userData => {
+        setUser(userData);
+        console.log('User data fetched:', userData);
+      })
+      .catch(err => {
+        console.error('Failed to fetch user data:', err);
+      });
+  }, [token]);
 
   usePolling(() => {
     if (!token) {
@@ -68,19 +88,6 @@ function App() {
         console.warn('Server: ', isServerActive, '\nServer active check failed: ', err);
       });
   }); // Poll every 5 seconds
-
-  useEffect(() => {
-    try {
-      const decoded = jwtDecode(token);
-      console.warn('Decoded Token: ', decoded);
-      const exp = decoded.exp * 1000;
-      const now = Date.now();
-      if (now >= exp) {
-        toast.info('Session expired');
-        logout();
-      }
-    } catch {}
-  }, []);
 
   usePolling(() => {
     if (!token) {
@@ -253,7 +260,7 @@ function App() {
 
   return (
     <Router>
-      <Header title='Task Tracker' /> {token ? <Navbar username={username} /> || null : null}
+      <Header title='Task Tracker' /> {token ? <Navbar username={user.username} /> || null : null}
       <Routes>
         {/* Public Route */}
         <Route
