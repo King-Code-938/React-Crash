@@ -289,7 +289,7 @@ function App() {
           path='/settings'
           element={
             <PrivateRoute token={token}>
-              <Settings username={username} darkMode={darkMode} setDarkMode={setDarkMode} logout={logout} />
+              <Settings username={user.username} darkMode={darkMode} setDarkMode={setDarkMode} logout={logout} />
             </PrivateRoute>
           }
         />
