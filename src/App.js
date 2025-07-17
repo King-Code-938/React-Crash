@@ -260,7 +260,7 @@ function App() {
 
   return (
     <Router>
-      <Header title='Task Tracker' /> {token ? <Navbar username={user.username} /> || null : null}
+      <Header title='Task Tracker' /> {token ? <Navbar username={user ? user.username || null : null} /> || null : null}
       <Routes>
         {/* Public Route */}
         <Route
