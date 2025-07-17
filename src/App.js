@@ -21,9 +21,7 @@ import { useState, useEffect } from 'react';
 function App() {
   const [tasks, setTasks] = useState([]);
   const [newTask, setNewTask] = useState('');
-  const [darkMode, setDarkMode] = useState(() => {
-    return localStorage.getItem('darkMode') === 'true';
-  });
+  const [darkMode, setDarkMode] = useState(false);
   const [bio, setBio] = useState('');
   const [isServerActive, setIsServerActive] = useState(true);
   const [token, setToken] = useState(() => localStorage.getItem('token') || null);
@@ -130,7 +128,6 @@ function App() {
       return;
     }
     updateUserPreferences(USER_API_URL, token, { darkMode: darkMode, bio: bio });
-    console.warn('Dark Mode:', darkMode, 'Bio:', bio);
     setDarkMode(darkMode);
     setBio(bio);
   }, [darkMode, bio]);
@@ -139,13 +136,19 @@ function App() {
     if (!token) {
       return;
     }
-
     getUserPreferences(USER_API_URL, token).then(prefs => {
-      console.warn('User Preferences:', prefs);
       setDarkMode(prefs.darkMode);
       setBio(prefs.bio);
     });
   }, [token]);
+
+  useEffect(() => {
+    if (darkMode) {
+      document.body.classList.add('dark');
+    } else {
+      document.body.classList.remove('dark');
+    }
+  }, [darkMode]);
 
   const dupExists = newTask => {
     return tasks.some(task => task.text.toLowerCase() === newTask.toLowerCase());

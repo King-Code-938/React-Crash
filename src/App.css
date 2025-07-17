@@ -41,8 +41,13 @@ body {
   font-family: sans-serif;
   margin: 0;
   padding: 0;
-  background: var(--bg);
-  color: var(--text);
+  background: #eee;
+  color: #111;
+}
+
+body.dark {
+  background: #121212;
+  color: #eee;
 }
 
 form, .settings, .task-wrapper {
@@ -84,17 +89,6 @@ button:disabled {
 
 button.md {
   width: 40%;
-}
-
-body.dark {
-  background: #121212;
-  color: #eee;
-  font-family: sans-serif;
-}
-
-body.light {
-  background: #f1f1f1;
-  color: #111;
 }
 
 @media (max-width: 600px) {
