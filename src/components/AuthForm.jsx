@@ -7,10 +7,14 @@ import { login, register } from '../services/authApi';
 function AuthForm({ setToken, AUTH_API_URL }) {
   const [mode, setMode] = useState('login');
   const [form, setForm] = useState({ username: '', email: '', inviteCode: '', password: '' });
+  const [isLoading, setIsLoading] = useState(false);
+  // State to track if registration was successful
   const [state, setState] = useState(false);
 
   const handleSubmit = e => {
     e.preventDefault();
+    setIsLoading(true);
+    document.body.style.cursor = 'wait';
 
     if (!form.email || !form.password) {
       toast.error('Email and password are required');
@@ -27,8 +31,9 @@ function AuthForm({ setToken, AUTH_API_URL }) {
             // ✅ Save token in both localStorage and App state
             localStorage.setItem('token', data.token);
             setToken(data.token);
-            setState(true);
-            toast.success(mode + ' successful');
+            setIsLoading(false);
+            document.body.style.cursor = 'default';
+            toast.success(`Login successful! Welcome ${data.user.username || data.user.email}`);
           } else {
             toast.error(data.message || 'Login failed');
           }
@@ -41,6 +46,10 @@ function AuthForm({ setToken, AUTH_API_URL }) {
       register(AUTH_API_URL, form.username, form.email, form.inviteCode, form.password)
         .then(data => {
           console.log('Registration response:', data);
+          setState(true);
+          setIsLoading(false);
+          document.body.style.cursor = 'default';
+          toast.success(`Registration successful! Welcome ${data.user.username || data.user.email}`);
         })
         .catch(err => {
           console.error('Registration error:', err);
@@ -80,8 +89,8 @@ function AuthForm({ setToken, AUTH_API_URL }) {
           value={form.password}
           onChange={e => setForm({ ...form, password: e.target.value })}
         />
-        <button className='lg' type='submit'>
-          {mode}
+        <button className='auth' type='submit' disabled={isLoading}>
+          {isLoading ? 'Loading...' : mode}
         </button>
         <p
           onClick={() => setMode(mode === 'login' ? 'register' : 'login')}
