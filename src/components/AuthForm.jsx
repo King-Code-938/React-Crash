@@ -107,6 +107,18 @@ function AuthForm({ setToken, AUTH_API_URL }) {
           style={{ cursor: 'pointer', color: 'blue', textDecoration: 'underline' }}>
           {mode === 'login' ? 'Create an account' : 'Back to login'}
         </p>
+        {mode === 'login' && (
+          <p>
+            Forgot your password?{' '}
+            <span
+              onClick={() => {
+                <Navigate to={'/forgot-password'} />;
+              }}
+              style={{ cursor: 'pointer', color: 'blue', textDecoration: 'underline' }}>
+              Reset It
+            </span>
+          </p>
+        )}
       </form>
     );
   }
