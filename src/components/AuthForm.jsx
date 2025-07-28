@@ -33,7 +33,7 @@ function AuthForm({ setToken, AUTH_API_URL }) {
             setToken(data.token);
             setIsLoading(false);
             document.body.style.cursor = 'default';
-            toast.success(`Login successful! Welcome ${data.user.username || data.user.email}`);
+            toast.success(`Login successful! Welcome`);
           } else {
             toast.error(data.message || 'Login failed');
           }
@@ -49,7 +49,7 @@ function AuthForm({ setToken, AUTH_API_URL }) {
           setState(true);
           setIsLoading(false);
           document.body.style.cursor = 'default';
-          toast.success(`Registration successful! Welcome ${data.user.username || data.user.email}`);
+          toast.success(`Registration successful! Welcome ${form.username || form.email}`);
         })
         .catch(err => {
           console.error('Registration error:', err);

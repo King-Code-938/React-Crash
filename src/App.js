@@ -7,6 +7,8 @@ import TaskForm from './components/TaskForm';
 import AuthForm from './components/AuthForm';
 import PrivateRoute from './components/PrivateRoute';
 import PublicOnly from './components/PublicOnly';
+import ForgotPassword from './components/ForgotPassword';
+import ResetPassword from './components/ResetPassword';
 import { fetchTasks, createTask, deleteTask, updateTask, deleteAllTask } from './services/tasksApi';
 import { getUserPreferences, updateUserPreferences, getUser } from './services/userApi';
 import usePolling from './hooks/usePolling';
@@ -271,6 +273,23 @@ function App() {
             </PublicOnly>
           }
         />
+        <Route
+          path='/forgot-password'
+          element={
+            <PublicOnly token={token}>
+              <ForgotPassword AUTH_API_URL={AUTH_API_URL} />
+            </PublicOnly>
+          }
+        />
+        <Route
+          path='/reset-password/:resetToken'
+          element={
+            <PublicOnly token={token}>
+              <ResetPassword />
+            </PublicOnly>
+          }
+        />
+
         {/* Protected Routes */}
         <Route
           path='/'
