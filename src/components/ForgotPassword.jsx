@@ -17,9 +17,8 @@ function ForgotPassword({ AUTH_API_URL }) {
         if (data.message === 'Email not found') {
           toast.error('Email not found');
         } else if (data.message === 'Reset link sent') {
-          console.log('Reset link sent:', data.token);
           setEmail('');
-          toast.success('Reset link sent to your email');
+          toast.success('Reset link sent to your email. Might take a minute before you receive it.');
         }
       })
       .catch(() => {

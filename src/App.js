@@ -64,12 +64,11 @@ function App() {
     getUser(USER_API_URL, token)
       .then(userData => {
         setUser(userData);
-        console.log('User data fetched:', userData);
       })
       .catch(err => {
         console.error('Failed to fetch user data:', err);
       });
-  }, [token, USER_API_URL]);
+  }, [token]);
 
   usePolling(() => {
     if (!token) {

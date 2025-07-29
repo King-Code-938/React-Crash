@@ -53,7 +53,6 @@ function AuthForm({ setToken, AUTH_API_URL }) {
     } else if (mode === 'register') {
       register(AUTH_API_URL, form.username, form.email, form.inviteCode, form.password)
         .then(data => {
-          console.log('Registration response:', data);
           setState(true);
           setIsLoading(false);
           document.body.style.cursor = 'default';
