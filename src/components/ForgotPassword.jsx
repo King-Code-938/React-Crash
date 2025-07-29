@@ -2,6 +2,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { forgotPassword } from '../services/authApi';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 function ForgotPassword({ AUTH_API_URL }) {
   const [email, setEmail] = useState('');
@@ -37,6 +38,9 @@ function ForgotPassword({ AUTH_API_URL }) {
         <button type='submit' disabled={isLoading}>
           {isLoading ? 'Sending...' : 'Send Reset Link'}
         </button>
+        <p>
+          Remembered your password? <Link to='/login'>Login</Link>
+        </p>
       </form>
     </div>
   );
