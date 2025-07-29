@@ -18,9 +18,13 @@ function AuthForm({ setToken, AUTH_API_URL }) {
 
     if (!form.email || !form.password) {
       toast.error('Email and password are required');
+      setIsLoading(false);
+      document.body.style.cursor = 'default';
       return;
     } else if (mode === 'register' && (!form.username || !form.inviteCode)) {
       toast.error('Username and invite code are required for registration');
+      setIsLoading(false);
+      document.body.style.cursor = 'default';
       return;
     }
 
@@ -35,12 +39,16 @@ function AuthForm({ setToken, AUTH_API_URL }) {
             document.body.style.cursor = 'default';
             toast.success(`Login successful! Welcome`);
           } else {
+            setIsLoading(false);
+            document.body.style.cursor = 'default';
             toast.error(data.message || 'Login failed');
           }
         })
         .catch(err => {
           console.error('Login error:', err);
           toast.error('Login failed. Check network.');
+          setIsLoading(false);
+          document.body.style.cursor = 'default';
         });
     } else if (mode === 'register') {
       register(AUTH_API_URL, form.username, form.email, form.inviteCode, form.password)
@@ -54,6 +62,8 @@ function AuthForm({ setToken, AUTH_API_URL }) {
         .catch(err => {
           console.error('Registration error:', err);
           toast.error('Registration failed. Check network.');
+          setIsLoading(false);
+          document.body.style.cursor = 'default';
         });
     }
   };

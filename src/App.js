@@ -69,7 +69,7 @@ function App() {
       .catch(err => {
         console.error('Failed to fetch user data:', err);
       });
-  }, [token]);
+  }, []);
 
   usePolling(() => {
     if (!token) {
@@ -137,8 +137,6 @@ function App() {
       return;
     }
     updateUserPreferences(USER_API_URL, token, { darkMode: darkMode, bio: bio });
-    setDarkMode(darkMode);
-    setBio(bio);
   }, [darkMode, bio]);
 
   useEffect(() => {
