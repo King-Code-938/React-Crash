@@ -69,7 +69,7 @@ function App() {
       .catch(err => {
         console.error('Failed to fetch user data:', err);
       });
-  }, []);
+  }, [token, USER_API_URL]);
 
   usePolling(() => {
     if (!token) {

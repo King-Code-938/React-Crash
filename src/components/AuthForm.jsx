@@ -109,10 +109,7 @@ function AuthForm({ setToken, AUTH_API_URL }) {
         </p>
         {mode === 'login' && (
           <p>
-            Forgot your password?{' '}
-            <Link to='/forgot-password' style={{ color: 'blue', textDecoration: 'underline' }}>
-              Reset It
-            </Link>
+            Forgot your password? <Link to='/forgot-password'>Reset It</Link>
           </p>
         )}
       </form>
