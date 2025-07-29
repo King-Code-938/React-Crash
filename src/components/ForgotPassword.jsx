@@ -1,4 +1,4 @@
-import toast from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { forgotPassword } from '../services/authApi';
 import { useState } from 'react';
