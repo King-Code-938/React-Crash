@@ -279,7 +279,7 @@ function App() {
           }
         />
         <Route
-          path='/reset-password'
+          path='/reset-password/:resetToken'
           element={
             <PublicOnly token={token}>
               <ResetPassword AUTH_API_URL={AUTH_API_URL} />
