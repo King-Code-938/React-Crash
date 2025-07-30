@@ -282,7 +282,7 @@ function App() {
           path='/reset-password/:resetToken'
           element={
             <PublicOnly token={token}>
-              <ResetPassword />
+              <ResetPassword AUTH_API_URL={AUTH_API_URL} />
             </PublicOnly>
           }
         />
